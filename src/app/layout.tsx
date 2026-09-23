@@ -18,7 +18,11 @@ export const metadata: Metadata = {
   title: "BvB - Build vs Break",
   description: "BvB Hackathon - Build vs Break",
   icons: {
-    icon: "/favicon.svg",
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/icon.png", type: "image/png" },
+    ],
+    apple: "/apple-icon.png",
   },
 };
 
