@@ -9,6 +9,7 @@ import Rules from "@/components/Rules";
 import FAQ from "@/components/FAQ";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import GlobalSpotlight from "@/components/GlobalSpotlight";
 
 export default function Home() {
   const handleRegisterClick = (e?: React.MouseEvent) => {
@@ -21,7 +22,8 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#1A1410] text-[#E8E2D6] selection:bg-[#8B7CF6]/30 selection:text-white">
+    <div className="relative min-h-screen bg-[#1A1410] text-[#E8E2D6] selection:bg-[#8B7CF6]/30 selection:text-white">
+      <GlobalSpotlight />
       <Navbar onRegisterClick={handleRegisterClick} />
 
       <main>

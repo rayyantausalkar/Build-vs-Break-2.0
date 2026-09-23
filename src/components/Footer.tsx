@@ -3,13 +3,17 @@
 import React, { useRef, useState } from "react";
 import {
   motion,
-  useMotionTemplate,
   useMotionValue,
   useReducedMotion,
   useSpring,
   useTransform,
 } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
+import {
+  CircuitTrack,
+  FloatingShards,
+  FOOTER_SHARDS,
+} from "./FloatingShards";
 
 /* ------------------------------------------------------------------ */
 /*  Design Tokens — strictly mirrors Navbar.tsx & Hero.tsx            */
@@ -25,13 +29,7 @@ const GRAD_BUILD =
 const GRAD_BREAK =
   "bg-[linear-gradient(100deg,#E8E2D6_4%,#C4642E_92%)] bg-clip-text text-transparent";
 
-const LINKS = [
-  { id: "about", label: "ABOUT" },
-  { id: "timeline", label: "TIMELINE" },
-  { id: "rules", label: "RULES" },
-  { id: "faq", label: "FAQ" },
-  { id: "contact", label: "CONTACT" },
-];
+
 
 /* ------------------------------------------------------------------ */
 /*  Magnetic 3D Sphere Bubble CTA                                     */
@@ -200,8 +198,6 @@ export default function Footer() {
     mouseY.set(e.clientY - rect.top);
   };
 
-  const spotlightBg = useMotionTemplate`radial-gradient(700px circle at ${smoothX}px ${smoothY}px, rgba(139,124,246,0.12), transparent 70%)`;
-
   const scrollToSection = (id: string, e: React.MouseEvent) => {
     e.preventDefault();
     const el = document.getElementById(id);
@@ -214,49 +210,21 @@ export default function Footer() {
     <footer
       ref={footerRef}
       onMouseMove={handleMouseMove}
-      className="relative min-h-[85vh] flex flex-col justify-between overflow-hidden border-t border-[#E8E2D6]/10 bg-[#1A1410] px-6 py-12 text-[#E8E2D6] sm:px-12 lg:px-20 lg:py-16 selection:bg-[#8B7CF6]/30 selection:text-white"
+      className="relative min-h-[85vh] flex flex-col justify-between overflow-hidden bg-[#1A1410] px-6 py-12 text-[#E8E2D6] sm:px-12 lg:px-20 lg:py-16 selection:bg-[#8B7CF6]/30 selection:text-white"
     >
-      {/* ------------------------------------------------------------ */}
-      {/* Dynamic Cursor Spotlight & Construction Atmosphere           */}
-      {/* ------------------------------------------------------------ */}
-      {!reduced && (
-        <motion.div
-          aria-hidden="true"
-          style={{ background: spotlightBg }}
-          className="pointer-events-none absolute inset-0 z-0 transition-opacity duration-700"
-        />
-      )}
-
       {/* Subtle Construction Grid */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(232,226,214,0.025)_1px,transparent_1px),linear-gradient(90deg,rgba(232,226,214,0.025)_1px,transparent_1px)] bg-[size:80px_80px] [mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_85%)]"
       />
 
-      {/* ------------------------------------------------------------ */}
-      {/* Header Bar: Minimal Navigation                               */}
-      {/* ------------------------------------------------------------ */}
-      <div className="relative z-10 flex items-center justify-end">
-        <nav aria-label="Footer Navigation">
-          <ul className="flex flex-wrap items-center gap-6 sm:gap-10">
-            {LINKS.map((link) => (
-              <li key={link.id}>
-                <a
-                  href={`#${link.id}`}
-                  onClick={(e) => scrollToSection(link.id, e)}
-                  className={`group relative text-[11px] font-medium uppercase tracking-[0.22em] text-[#E8E2D6]/60 transition-colors duration-300 hover:text-[#E8E2D6] ${MONO}`}
-                >
-                  <span>{link.label}</span>
-                  <span
-                    aria-hidden="true"
-                    className="absolute inset-x-0 -bottom-1 h-px origin-left scale-x-0 bg-[linear-gradient(90deg,#8B7CF6,#C4642E)] transition-transform duration-300 group-hover:scale-x-100"
-                  />
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </div>
+      {/* Timeline-style Orthogonal Circuit Trace */}
+      <CircuitTrack className="top-1/4" />
+
+      {/* Floating Pieces & Shards (Matching Hero & Timeline) */}
+      <FloatingShards shards={FOOTER_SHARDS} smoothX={smoothX} smoothY={smoothY} />
+
+
 
       {/* ------------------------------------------------------------ */}
       {/* Centerpiece: Monumental Interactive Kinetic Typography       */}
