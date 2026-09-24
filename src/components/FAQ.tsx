@@ -94,7 +94,7 @@ export default function FAQ() {
       id="faq"
       ref={sectionRef}
       onMouseMove={handleMouseMove}
-      className="relative w-full overflow-hidden bg-[#1A1410] px-6 py-14 sm:px-12 sm:py-20 lg:px-20 lg:py-24 text-[#E8E2D6] selection:bg-[#8B7CF6]/30 selection:text-white"
+      className="relative w-full overflow-hidden bg-[#1A1410] px-4 py-14 sm:px-12 sm:py-20 lg:px-20 lg:py-24 text-[#E8E2D6] selection:bg-[#8B7CF6]/30 selection:text-white"
     >
 
       {/* Structural Construction Grid */}
@@ -123,7 +123,7 @@ export default function FAQ() {
         {/* ------------------------------------------------------------ */}
         <div className="text-center">
           <h2
-            className={`${DISPLAY} text-3xl font-extrabold uppercase tracking-[-0.03em] sm:text-5xl lg:text-6xl text-[#E8E2D6]`}
+            className={`${DISPLAY} text-2xl sm:text-4xl lg:text-6xl font-extrabold uppercase tracking-[-0.03em] text-[#E8E2D6]`}
           >
             FREQUENTLY ASKED <span className={GRAD_BREAK}>QUESTIONS</span>
           </h2>
@@ -166,13 +166,13 @@ export default function FAQ() {
                 <button
                   type="button"
                   onClick={() => toggle(idx)}
-                  className="relative z-10 flex w-full items-center justify-between px-6 py-4.5 sm:px-9 sm:py-5 text-left outline-none"
+                  className="relative z-10 flex w-full items-center justify-between px-4 py-4 sm:px-9 sm:py-5 text-left outline-none"
                   aria-expanded={isOpen}
                 >
-                  <div className="flex items-center gap-4 sm:gap-6 pr-4">
+                  <div className="flex items-center gap-3 sm:gap-6 pr-2 sm:pr-4">
                     {/* Big Clean Index Number */}
                     <span
-                      className={`${MONO} text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight select-none transition-colors duration-300 ${
+                      className={`${MONO} text-lg sm:text-2xl lg:text-3xl font-bold tracking-tight select-none transition-colors duration-300 ${
                         isOpen
                           ? "text-[#8B7CF6]"
                           : "text-[#E8E2D6]/30 group-hover:text-[#8B7CF6]/70"
@@ -183,7 +183,7 @@ export default function FAQ() {
 
                     {/* Question Title */}
                     <span
-                      className={`${DISPLAY} text-base sm:text-lg lg:text-xl font-bold uppercase tracking-tight text-[#E8E2D6] transition-colors duration-300 ${
+                      className={`${DISPLAY} text-sm sm:text-lg lg:text-xl font-bold uppercase tracking-tight text-[#E8E2D6] transition-colors duration-300 ${
                         isOpen ? "text-white" : "group-hover:text-white"
                       }`}
                     >
@@ -193,7 +193,7 @@ export default function FAQ() {
 
                   {/* Clean Minimalist Toggle Indicator */}
                   <div
-                    className={`flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full border transition-all duration-300 ${
+                    className={`flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full border transition-all duration-300 ${
                       isOpen
                         ? "border-[#8B7CF6] bg-[#8B7CF6] text-[#1A1410] rotate-45 shadow-[0_0_16px_rgba(139,124,246,0.35)]"
                         : "border-[#E8E2D6]/15 bg-[#E8E2D6]/[0.04] text-[#E8E2D6]/70 group-hover:border-[#8B7CF6]/60 group-hover:bg-[#8B7CF6]/15 group-hover:text-[#8B7CF6]"
@@ -214,9 +214,9 @@ export default function FAQ() {
                       transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
                       className="overflow-hidden"
                     >
-                      <div className="relative z-10 px-6 sm:px-9 pb-6 pt-1 sm:pb-7">
+                      <div className="relative z-10 px-4 sm:px-9 pb-5 pt-1 sm:pb-7">
                         {/* 1-Sentence High-Signal Summary */}
-                        <p className="text-sm sm:text-base leading-relaxed text-[#E8E2D6]/85 font-normal">
+                        <p className="text-xs sm:text-base leading-relaxed text-[#E8E2D6]/85 font-normal">
                           {item.summary}
                         </p>
                       </div>

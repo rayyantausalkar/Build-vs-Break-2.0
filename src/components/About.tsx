@@ -292,7 +292,7 @@ function InteractiveBlade({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay: index * 0.1, ease: EASE }}
-      className="group relative flex flex-col sm:flex-row sm:items-start border-t border-[#E8E2D6]/10 py-8 lg:py-10 transition-all duration-500 cursor-pointer overflow-hidden gap-4 sm:gap-8"
+      className="group relative flex flex-row items-start border-t border-[#E8E2D6]/10 py-6 sm:py-8 lg:py-10 transition-all duration-500 cursor-pointer overflow-hidden gap-3.5 sm:gap-8"
     >
       {/* Background Hover Aura Flare */}
       <span
@@ -306,7 +306,7 @@ function InteractiveBlade({
       {/* Number */}
       <div className="relative z-10 shrink-0 select-none pt-0.5">
         <span
-          className={`${DISPLAY} text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#E8E2D6]/30 transition-colors duration-300 group-hover:text-white`}
+          className={`${DISPLAY} text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#E8E2D6]/30 transition-colors duration-300 group-hover:text-white`}
         >
           {phase.num}
         </span>
@@ -315,7 +315,7 @@ function InteractiveBlade({
       {/* Monumental Title + Detailed Explanation */}
       <div className="relative z-10 max-w-4xl">
         <h3
-          className={`${DISPLAY} text-3xl sm:text-5xl lg:text-6xl font-extrabold uppercase tracking-tight text-white transition-transform duration-500 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-2`}
+          className={`${DISPLAY} text-2xl sm:text-4xl lg:text-6xl font-extrabold uppercase tracking-tight text-white transition-transform duration-500 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-2`}
         >
           {phase.name}
         </h3>
@@ -430,7 +430,7 @@ export default function About() {
 
       {/* ---------------------------------------------------------- */}
       {/* Main Container */}
-      <div className="relative z-10 mx-auto w-full max-w-[1440px] px-6 sm:px-8 lg:px-12">
+      <div className="relative z-10 mx-auto w-full max-w-[1440px] px-4 sm:px-8 lg:px-12">
         {/* ============================================================ */}
         {/*  MONUMENTAL HERO: VISUAL & KINETIC DUALITY                  */}
         {/* ============================================================ */}
@@ -441,7 +441,7 @@ export default function About() {
           {/* Left Column: Monumental Headline (Zero Long Paragraphs) */}
           <div className="lg:col-span-6">
             <h2
-              className={`${DISPLAY} text-[clamp(2.6rem,7.5vw,4.8rem)] font-extrabold uppercase leading-[0.92] tracking-[-0.03em]`}
+              className={`${DISPLAY} text-[clamp(1.85rem,6.5vw,4.8rem)] font-extrabold uppercase leading-[0.92] tracking-[-0.03em]`}
             >
               <span className={`block ${GRAD_BUILD}`}>Construct to endure.</span>
               <span className={`block ${GRAD_BREAK}`}>Fracture to discover.</span>

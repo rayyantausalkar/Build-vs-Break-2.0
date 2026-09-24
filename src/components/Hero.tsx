@@ -1687,7 +1687,7 @@ export default function Hero({
           className="relative z-30 -mt-3 sm:-mt-5 md:-mt-[3vw] lg:-mt-[3.6vw]"
         >
           <h1
-            className={`${DISPLAY} flex flex-col items-start text-[clamp(3rem,17vw,6rem)] font-bold uppercase leading-[0.88] tracking-[-0.03em] md:text-[clamp(4rem,12vw,8rem)] lg:flex-row lg:items-end lg:justify-between lg:text-[clamp(4.5rem,8.6vw,9.5rem)]`}
+            className={`${DISPLAY} flex flex-col items-start text-[clamp(2.4rem,13vw,6rem)] font-bold uppercase leading-[0.88] tracking-[-0.03em] md:text-[clamp(4rem,12vw,8rem)] lg:flex-row lg:items-end lg:justify-between lg:text-[clamp(4.5rem,8.6vw,9.5rem)]`}
           >
             <span className="sr-only">BvB — Build vs Break</span>
 

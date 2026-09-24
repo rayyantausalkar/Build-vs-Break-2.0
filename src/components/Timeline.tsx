@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   motion,
   useMotionValue,
@@ -268,12 +268,73 @@ export default function Timeline() {
   const [activeIdx, setActiveIdx] = useState<number>(0);
   const reduced = Boolean(useReducedMotion());
   const sectionRef = useRef<HTMLElement>(null);
+  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   /* Mouse parallax coordinates for background floating shards */
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const smoothX = useSpring(mouseX, { stiffness: 75, damping: 22 });
   const smoothY = useSpring(mouseY, { stiffness: 75, damping: 22 });
+
+  /* Activate middle timeline item dynamically on scroll */
+  useEffect(() => {
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (!sectionRef.current) return;
+      const sectionRect = sectionRef.current.getBoundingClientRect();
+      const vh = window.innerHeight;
+
+      // Only evaluate if the timeline section is in view
+      if (sectionRect.bottom <= 0 || sectionRect.top >= vh) return;
+
+      const midY = vh * 0.5;
+      let closestIdx = 0;
+      let minDistance = Infinity;
+
+      itemRefs.current.forEach((el, idx) => {
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const elCenter = rect.top + rect.height * 0.5;
+        const distance = Math.abs(elCenter - midY);
+
+        if (distance < minDistance) {
+          minDistance = distance;
+          closestIdx = idx;
+        }
+      });
+
+      setActiveIdx((prev) => (prev === closestIdx ? prev : closestIdx));
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+
+    const lenis = (window as unknown as { __lenis?: { on: (event: string, cb: () => void) => void; off: (event: string, cb: () => void) => void } }).__lenis;
+    if (lenis?.on) {
+      lenis.on("scroll", onScroll);
+    }
+
+    onScroll();
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (lenis?.off) {
+        lenis.off("scroll", onScroll);
+      }
+    };
+  }, []);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
     if (reduced) return;
@@ -326,7 +387,7 @@ export default function Timeline() {
       {/* ---------------------------------------------------------- */}
       {/* Container Content                                          */}
       {/* ---------------------------------------------------------- */}
-      <div className="relative z-10 mx-auto w-full max-w-[1400px] px-6 sm:px-8 lg:px-12">
+      <div className="relative z-10 mx-auto w-full max-w-[1400px] px-4 sm:px-8 lg:px-12">
         {/* Section Header */}
         <div className="pb-12 border-b border-[#E8E2D6]/10">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
@@ -334,7 +395,7 @@ export default function Timeline() {
 
 
               <h2
-                className={`${DISPLAY} mt-4 text-[clamp(2.4rem,7vw,4.5rem)] font-extrabold uppercase leading-[0.94] tracking-[-0.02em] text-[#E8E2D6]`}
+                className={`${DISPLAY} mt-4 text-[clamp(1.85rem,6vw,4.5rem)] font-extrabold uppercase leading-[0.94] tracking-[-0.02em] text-[#E8E2D6]`}
               >
                 <span className={`block ${GRAD_BUILD}`}>Every build</span>
                 <span className={`block ${GRAD_BREAK}`}>has a break.</span>
@@ -356,7 +417,7 @@ export default function Timeline() {
           {/* Central Conduit Spine Line on Desktop / Left on Mobile */}
           <div
             aria-hidden="true"
-            className="absolute top-4 bottom-4 left-7 sm:left-8 md:left-1/2 -translate-x-1/2 w-0.5 md:w-1 bg-gradient-to-b from-[#8B7CF6]/80 via-[#E8E2D6]/20 to-[#C4642E]/80"
+            className="absolute top-4 bottom-4 left-6 sm:left-8 md:left-1/2 -translate-x-1/2 w-0.5 md:w-1 bg-gradient-to-b from-[#8B7CF6]/80 via-[#E8E2D6]/20 to-[#C4642E]/80"
           >
             {/* Glowing vertical laser pulse */}
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#8B7CF6] to-transparent opacity-60 blur-sm animate-pulse" />
@@ -372,6 +433,9 @@ export default function Timeline() {
               return (
                 <div
                   key={item.number}
+                  ref={(el) => {
+                    itemRefs.current[idx] = el;
+                  }}
                   onMouseEnter={() => setActiveIdx(idx)}
                   onClick={() => setActiveIdx(idx)}
                   className={`group relative flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-0 cursor-pointer ${
@@ -384,12 +448,12 @@ export default function Timeline() {
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6, delay: reduced ? 0 : idx * 0.08, ease: EASE }}
-                    className={`w-full md:w-[42%] pl-18 sm:pl-20 md:pl-0 text-left ${
+                    className={`w-full md:w-[42%] pl-14 sm:pl-20 md:pl-0 text-left ${
                       isEven ? "md:pr-12" : "md:pl-12"
                     }`}
                   >
                     <div
-                      className={`relative overflow-hidden rounded-2xl p-6 sm:p-7 backdrop-blur-xl border text-left transition-all duration-500 ${
+                      className={`relative overflow-hidden rounded-2xl p-4.5 sm:p-7 backdrop-blur-xl border text-left transition-all duration-500 ${
                         isActive
                           ? isEmber
                             ? "border-[#C4642E]/70 shadow-[0_20px_45px_-10px_rgba(0,0,0,0.85),0_0_24px_-4px_rgba(196,100,46,0.3)] scale-[1.02]"
@@ -433,7 +497,7 @@ export default function Timeline() {
                   </motion.div>
 
                   {/* Center Node on the Vertical Spine */}
-                  <div className="absolute left-7 sm:left-8 md:left-1/2 -translate-x-1/2 z-20">
+                  <div className="absolute left-6 sm:left-8 md:left-1/2 -translate-x-1/2 z-20">
                     <div className="transition-transform duration-300 group-hover:scale-110">
                       <TimelineNode
                         accent={item.accent}

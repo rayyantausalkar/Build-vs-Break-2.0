@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   motion,
   useMotionValue,
@@ -333,12 +333,89 @@ export default function Rules() {
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
   const reduced = Boolean(useReducedMotion());
   const sectionRef = useRef<HTMLElement>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   /* Mouse tracking for ambient parallax */
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const smoothX = useSpring(mouseX, { stiffness: 80, damping: 24 });
   const smoothY = useSpring(mouseY, { stiffness: 80, damping: 24 });
+
+  /* Activate rule box dynamically on scroll ONLY on mobile and smaller screens (< 1024px) */
+  useEffect(() => {
+    let ticking = false;
+
+    const handleScroll = () => {
+      // Only active on mobile and smaller screens (< 1024px)
+      if (typeof window === "undefined" || window.innerWidth >= 1024) {
+        return;
+      }
+
+      if (!sectionRef.current) return;
+      const sectionRect = sectionRef.current.getBoundingClientRect();
+      const vh = window.innerHeight;
+
+      // If the Rules section is completely out of view, clear active state
+      if (sectionRect.bottom <= 0 || sectionRect.top >= vh) {
+        setActiveIdx(null);
+        return;
+      }
+
+      const midY = vh * 0.5;
+      let closestIdx: number | null = null;
+      let minDistance = Infinity;
+
+      cardRefs.current.forEach((el, idx) => {
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const elCenter = rect.top + rect.height * 0.5;
+        const distance = Math.abs(elCenter - midY);
+
+        // Consider active if near the center of the viewport
+        if (distance < minDistance && distance < vh * 0.42) {
+          minDistance = distance;
+          closestIdx = idx;
+        }
+      });
+
+      setActiveIdx((prev) => (prev === closestIdx ? prev : closestIdx));
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    const handleResize = () => {
+      if (typeof window !== "undefined" && window.innerWidth >= 1024) {
+        setActiveIdx(null);
+      }
+      onScroll();
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", handleResize, { passive: true });
+
+    const lenis = (window as unknown as { __lenis?: { on: (event: string, cb: () => void) => void; off: (event: string, cb: () => void) => void } }).__lenis;
+    if (lenis?.on) {
+      lenis.on("scroll", onScroll);
+    }
+
+    onScroll();
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", handleResize);
+      if (lenis?.off) {
+        lenis.off("scroll", onScroll);
+      }
+    };
+  }, []);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
     if (reduced) return;
@@ -390,11 +467,11 @@ export default function Rules() {
       {/* ------------------------------------------------------------ */}
       {/* Section Content                                              */}
       {/* ------------------------------------------------------------ */}
-      <div className="relative z-10 mx-auto w-full max-w-[1400px] px-6 sm:px-8 lg:px-12">
+      <div className="relative z-10 mx-auto w-full max-w-[1400px] px-4 sm:px-8 lg:px-12">
         {/* Section Header: Minimal, High-Impact & Editorial */}
         <div className="pb-12 border-b border-[#E8E2D6]/10">
           <h2
-            className={`${DISPLAY} text-3xl font-extrabold uppercase tracking-tight text-[#E8E2D6] sm:text-5xl lg:text-6xl`}
+            className={`${DISPLAY} text-2xl sm:text-4xl lg:text-6xl font-extrabold uppercase tracking-tight text-[#E8E2D6]`}
           >
             SIX RULES. <span className={GRAD_BREAK}>ZERO EXCEPTIONS.</span>
           </h2>
@@ -416,17 +493,29 @@ export default function Rules() {
             return (
               <motion.div
                 key={d.id}
-                onMouseEnter={() => setActiveIdx(idx)}
-                onMouseLeave={() => setActiveIdx(null)}
+                ref={(el) => {
+                  cardRefs.current[idx] = el;
+                }}
+                onMouseEnter={() => {
+                  if (typeof window !== "undefined" && window.innerWidth >= 1024) {
+                    setActiveIdx(idx);
+                  }
+                }}
+                onMouseLeave={() => {
+                  if (typeof window !== "undefined" && window.innerWidth >= 1024) {
+                    setActiveIdx(null);
+                  }
+                }}
+                onClick={() => setActiveIdx(idx)}
                 whileHover={reduced ? {} : { y: -4 }}
                 transition={{ duration: 0.3 }}
-                className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl sm:rounded-3xl p-6 sm:p-7 backdrop-blur-xl transition-all duration-500 cursor-pointer select-none border ${
+                className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl sm:rounded-3xl p-5 sm:p-7 backdrop-blur-xl transition-all duration-500 cursor-pointer select-none border ${
                   isHovered
                     ? isViolet
                       ? "border-[#8B7CF6]/60 shadow-[0_20px_45px_-12px_rgba(0,0,0,0.8),0_0_30px_-5px_rgba(139,124,246,0.3)]"
                       : "border-[#C4642E]/60 shadow-[0_20px_45px_-12px_rgba(0,0,0,0.8),0_0_30px_-5px_rgba(196,100,46,0.3)]"
                     : isDimmed
-                    ? "border-[#E8E2D6]/8 opacity-45"
+                    ? "border-[#E8E2D6]/8 opacity-65 lg:opacity-45"
                     : "border-[#E8E2D6]/12 hover:border-[#8B7CF6]/40 shadow-[0_8px_30px_-10px_rgba(0,0,0,0.6)]"
                 }`}
                 style={{

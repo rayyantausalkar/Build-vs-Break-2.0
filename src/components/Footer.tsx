@@ -214,7 +214,7 @@ export default function Footer() {
     <footer
       ref={footerRef}
       onMouseMove={handleMouseMove}
-      className="relative w-full flex flex-col justify-between overflow-hidden bg-[#1A1410] px-6 pt-12 pb-10 sm:px-12 lg:px-20 lg:pt-16 lg:pb-12 text-[#E8E2D6] selection:bg-[#8B7CF6]/30 selection:text-white"
+      className="relative w-full flex flex-col justify-between overflow-hidden bg-[#1A1410] px-4 pt-12 pb-10 sm:px-12 lg:px-20 lg:pt-16 lg:pb-12 text-[#E8E2D6] selection:bg-[#8B7CF6]/30 selection:text-white"
     >
       {/* Subtle Construction Grid */}
       <div
@@ -261,7 +261,7 @@ export default function Footer() {
                 el.scrollIntoView({ behavior: "smooth" });
               }
             }}
-            className={`group/build ${DISPLAY} relative block text-[clamp(3.5rem,14vw,11.5rem)] font-extrabold uppercase leading-none tracking-[-0.04em] outline-none transition-transform duration-500 hover:scale-[1.03] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)]`}
+            className={`group/build ${DISPLAY} relative block text-[clamp(2.5rem,13vw,11.5rem)] font-extrabold uppercase leading-none tracking-[-0.04em] outline-none transition-transform duration-500 hover:scale-[1.03] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)]`}
           >
             {/* Ambient soft glow */}
             <span
@@ -284,7 +284,7 @@ export default function Footer() {
           {/* Central VS Divider */}
           <div className="flex items-center gap-3 sm:gap-4 select-none my-auto">
             <span
-              className={`${DISPLAY} text-2xl sm:text-4xl lg:text-5xl font-extrabold uppercase tracking-widest text-[#C4642E]`}
+              className={`${DISPLAY} text-xl sm:text-4xl lg:text-5xl font-extrabold uppercase tracking-widest text-[#C4642E]`}
             >
               VS
             </span>
@@ -302,7 +302,7 @@ export default function Footer() {
                 el.scrollIntoView({ behavior: "smooth" });
               }
             }}
-            className={`group/break ${DISPLAY} relative block text-[clamp(3.5rem,14vw,11.5rem)] font-extrabold uppercase leading-none tracking-[-0.04em] outline-none transition-transform duration-500 hover:scale-[1.03] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)]`}
+            className={`group/break ${DISPLAY} relative block text-[clamp(2.5rem,13vw,11.5rem)] font-extrabold uppercase leading-none tracking-[-0.04em] outline-none transition-transform duration-500 hover:scale-[1.03] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)]`}
           >
             {/* Ambient soft glow */}
             <span
@@ -339,7 +339,7 @@ export default function Footer() {
           >
             Build <span className="text-[#C4642E]">vs</span> Break
           </span>
-          <span className={`${MONO} text-[11px] uppercase tracking-[0.2em] text-[#E8E2D6]/50`}>
+          <span className={`${MONO} text-[10px] sm:text-[11px] uppercase tracking-[0.16em] sm:tracking-[0.2em] text-[#E8E2D6]/50 text-center sm:text-right`}>
             © {new Date().getFullYear()} BUILD VS BREAK. ALL RIGHTS RESERVED.
           </span>
         </div>

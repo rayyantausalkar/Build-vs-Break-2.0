@@ -316,7 +316,7 @@ export default function Contact() {
       id="contact"
       ref={sectionRef}
       onMouseMove={handleMouseMove}
-      className="relative w-full overflow-hidden bg-[#1A1410] px-6 py-14 sm:px-12 sm:py-20 lg:px-20 lg:py-24 text-[#E8E2D6] selection:bg-[#8B7CF6]/30 selection:text-white"
+      className="relative w-full overflow-hidden bg-[#1A1410] px-4 py-14 sm:px-12 sm:py-20 lg:px-20 lg:py-24 text-[#E8E2D6] selection:bg-[#8B7CF6]/30 selection:text-white"
     >
       {/* Structural Grid */}
       <div
@@ -344,7 +344,7 @@ export default function Contact() {
       <div className="relative z-10 text-center">
         {/* Kinetic Hook */}
         <h2
-          className={`${DISPLAY} text-3xl font-extrabold uppercase tracking-[-0.03em] sm:text-5xl lg:text-6xl text-[#E8E2D6]/80`}
+          className={`${DISPLAY} text-2xl sm:text-4xl lg:text-6xl font-extrabold uppercase tracking-[-0.03em] text-[#E8E2D6]/80`}
         >
           Have doubts about the <span className={GRAD_BUILD}>event</span>?
           <br />
@@ -356,7 +356,7 @@ export default function Contact() {
           <a
             href={`mailto:${TARGET_EMAIL}`}
             onClick={copyEmail}
-            className="group relative inline-flex items-center justify-center rounded-2xl sm:rounded-[2.25rem] border border-[#8B7CF6]/45 bg-[#1F1729]/90 px-6 py-4.5 sm:px-10 sm:py-6 lg:px-14 lg:py-7 backdrop-blur-2xl outline-none select-none max-w-full transition-transform duration-300 hover:scale-[1.01]"
+            className="group relative inline-flex items-center justify-center rounded-2xl sm:rounded-[2.25rem] border border-[#8B7CF6]/45 bg-[#1F1729]/90 px-4 py-3.5 sm:px-10 sm:py-6 lg:px-14 lg:py-7 backdrop-blur-2xl outline-none select-none max-w-full transition-transform duration-300 hover:scale-[1.01]"
             style={{
               boxShadow:
                 "inset 0 1px 2px rgba(255,255,255,0.22), inset 0 -6px 16px rgba(0,0,0,0.85), 0 20px 50px -15px rgba(0,0,0,0.85), 0 0 35px rgba(139,124,246,0.25)",
@@ -378,7 +378,7 @@ export default function Contact() {
             {/* Email Display Container */}
             <div className="relative z-10 inline-block max-w-full">
               <span
-                className={`${DISPLAY} block text-[clamp(1.15rem,3.2vw,3rem)] sm:text-[clamp(1.4rem,3.6vw,3.4rem)] font-extrabold uppercase leading-tight tracking-[-0.03em] bg-[linear-gradient(100deg,#8B7CF6_10%,#E8E2D6_50%,#C4642E_90%)] bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(139,124,246,0.4)] break-all sm:break-normal`}
+                className={`${DISPLAY} block text-[clamp(0.95rem,3.8vw,3rem)] sm:text-[clamp(1.4rem,3.6vw,3.4rem)] font-extrabold uppercase leading-tight tracking-[-0.03em] bg-[linear-gradient(100deg,#8B7CF6_10%,#E8E2D6_50%,#C4642E_90%)] bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(139,124,246,0.4)] break-all sm:break-normal`}
               >
                 {TARGET_EMAIL}
               </span>
