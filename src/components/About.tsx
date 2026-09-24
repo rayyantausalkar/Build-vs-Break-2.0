@@ -252,25 +252,25 @@ interface PhaseRound {
 const PHASES: PhaseRound[] = [
   {
     num: "01",
-    name: "QUIZ",
+    name: "QUIZ SHORTLIST",
     details:
-      "A fast-paced technical screening round evaluating algorithmic thinking, computer science fundamentals, data structures, and programming logic under strict time limits to filter the top qualifying squads.",
+      "Preliminary screening round evaluating logic and technical fundamentals. Exactly 30 qualifying teams are shortlisted to advance to the Main Event on 3rd October.",
     accent: IVORY,
     entropyVal: 0.05,
   },
   {
     num: "02",
-    name: "BUILD",
+    name: "ROUND 1 — BUILD",
     details:
-      "The core engineering trial. Qualified squads build innovative, production-grade systems and AI-powered solutions entirely live from scratch—strictly zero pre-built repositories, evaluated on scalability and code quality.",
+      "15 Problem Statements are released on a First-Come, First-Served (FCFS) basis. Two teams choosing the same problem become 1v1 rivals, developing complete working solutions from scratch.",
     accent: VIOLET,
     entropyVal: 0.45,
   },
   {
     num: "03",
-    name: "BREAK",
+    name: "ROUND 2 — BREAK & PITCH",
     details:
-      "The battlefield inversion. Teams switch roles to identify vulnerabilities, hunt obscure edge cases, reverse-engineer, and debug complex codebases under relentless adversarial pressure to expose every weak link.",
+      "Teams receive 30 minutes to dissect their opponent's project to uncover flaws and technical limits, followed by live judge pitching and direct cross-challenge to crown the winner.",
     accent: EMBER,
     entropyVal: 0.95,
   },

@@ -54,67 +54,78 @@ interface TimelineStage {
 const TIMELINE: TimelineStage[] = [
   {
     number: "01",
-    code: "ARR",
-    phase: "ARRIVE",
-    timeTag: "T+00h // GENESIS",
-    title: "The starting coordinate.",
+    code: "REP",
+    phase: "REPORTING",
+    timeTag: "08:30 AM – 09:00 AM // REPORTING",
+    title: "Squad Check-in & Entry Verification",
     description:
-      "Teams assemble, the arena brief drops, the board resets to zero. Every build launches from the same blank grid.",
+      "All 30 shortlisted squads report to the arena. Team check-in, credential verification, and battle desk allocation.",
     accent: "ivory",
     accentColor: "#E8E2D6",
   },
   {
     number: "02",
-    code: "BLD",
-    phase: "BUILD",
-    timeTag: "T+08h // SYSTEM ARCH",
-    title: "Structure, deliberately.",
+    code: "REL",
+    phase: "SELECTION",
+    timeTag: "09:00 AM – 09:30 AM // PROBLEM RELEASE",
+    title: "15 Problem Statements & 1v1 Matchups",
     description:
-      "Ideas become load-bearing. Architecture stacks layer by layer — intentional, zero boilerplate, zero defaults.",
+      "15 official Problem Statements are revealed on a strict First-Come, First-Served (FCFS) basis. Two teams selecting the same problem become direct head-to-head opponents.",
     accent: "violet",
     accentColor: "#8B7CF6",
   },
   {
     number: "03",
-    code: "BRK",
-    phase: "BREAK",
-    timeTag: "T+18h // CHAOS INJECT",
-    title: "Pressure finds the seams.",
+    code: "BLD",
+    phase: "ROUND 1: BUILD",
+    timeTag: "09:30 AM – 12:30 PM // SOLUTION BUILDING",
+    title: "Round 1 — Solution Engineering",
     description:
-      "The structure meets adversarial fuzzing and chaos injection. What is fragile breaks fast and cleanly.",
-    accent: "ember",
-    accentColor: "#C4642E",
+      "Live engineering trial. Each squad constructs and develops a working solution for their chosen problem statement completely from scratch.",
+    accent: "violet",
+    accentColor: "#8B7CF6",
   },
   {
     number: "04",
-    code: "RTK",
-    phase: "RETHINK",
-    timeTag: "T+26h // DIAGNOSTICS",
-    title: "Read the fracture lines.",
+    code: "REC",
+    phase: "RECESS",
+    timeTag: "12:30 PM – 01:30 PM // LUNCH BREAK",
+    title: "Lunch Break & Strategic Alignment",
     description:
-      "Not a restart — a recalibration. System failure becomes actionable telemetry, sharpening the next iteration.",
+      "One-hour recess for competitors to recharge, strategize, and prepare for the adversarial crack & challenge phase.",
     accent: "ivory",
     accentColor: "#E8E2D6",
   },
   {
     number: "05",
-    code: "RBD",
-    phase: "REBUILD",
-    timeTag: "T+32h // HARDENING",
-    title: "Sharper the second time.",
+    code: "BRK",
+    phase: "ROUND 2: BREAK",
+    timeTag: "01:30 PM – 02:00 PM // 30-MIN ANALYSIS",
+    title: "Round 2 — Crack & Challenge",
     description:
-      "Every weak seam gets reinforced. The architecture returns fortified, battle-tested, resilient under stress.",
+      "Adversarial inspection. Teams receive 30 minutes to dissect their opponent's project, hunting down architectural gaps, flaws, failure points, and missing features.",
+    accent: "ember",
+    accentColor: "#C4642E",
+  },
+  {
+    number: "06",
+    code: "PTC",
+    phase: "JUDGING",
+    timeTag: "02:30 PM – 03:30 PM // SHOWDOWN",
+    title: "Solution Pitch & Cross-Challenge",
+    description:
+      "Competing pairs face the judges: Step 1 — Both teams pitch their own solutions. Step 2 — Teams present the flaws, loopholes, and limitations identified in their opponent's project.",
     accent: "violet",
     accentColor: "#8B7CF6",
   },
   {
-    number: "06",
-    code: "RVL",
-    phase: "REVEAL",
-    timeTag: "T+36h // ZERO-DAY",
-    title: "The system, finished.",
+    number: "07",
+    code: "VAL",
+    phase: "VALEDICTORY",
+    timeTag: "04:00 PM – 05:00 PM // AWARDS",
+    title: "Valedictory Ceremony & Victory",
     description:
-      "What's left standing takes center stage. Build vs Break resolved in public under live adversarial verification.",
+      "Scores tallied, winners declared across all 15 battle matchups, and awards presented. Organised by Neuronyx | AIML Department!",
     accent: "ember",
     accentColor: "#C4642E",
   },
@@ -375,7 +386,7 @@ export default function Timeline() {
               </h2>
 
               <p className="mt-4 max-w-xl text-sm leading-relaxed text-[#E8E2D6]/65 sm:text-base">
-                Six operational states. One continuous trajectory through arrival, construction, adversarial failure, and public resolution.
+                Main Event: 3rd October 2026 · Organised by Neuronyx | AIML Department. 30 shortlisted teams battle across 15 problem statements in head-to-head engineering combat.
               </p>
             </div>
 

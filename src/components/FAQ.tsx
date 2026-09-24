@@ -36,33 +36,39 @@ const GRAD_BREAK =
 const FAQS = [
   {
     id: "01",
-    question: "WHO CAN COMPETE?",
+    question: "HOW DOES SHORTLISTING WORK?",
     summary:
-      "Open worldwide to students, engineers, security researchers, and designers. Squads of 1 to 4 operatives.",
+      "All registered teams participate in the preliminary Quiz Round. Based on quiz performance, exactly 30 qualifying teams are shortlisted for the Main Event on 3rd October.",
   },
   {
     id: "02",
-    question: "REMOTE OR IN-PERSON?",
+    question: "WHEN IS THE MAIN EVENT & WHO IS ORGANIZING?",
     summary:
-      "Hybrid arena format: physical battle stages at AIKTC plus a globally synchronized digital uplink.",
+      "The Main Event takes place on 3rd October 2026. Build vs Break is officially organised by Neuronyx | AIML Department.",
   },
   {
     id: "03",
-    question: "WHAT ARE THE TRACKS?",
+    question: "HOW ARE PROBLEM STATEMENTS ALLOTTED?",
     summary:
-      "Cyber defense, hardened systems, autonomous AI agent infrastructure, and cryptographic protocols.",
+      "15 Problem Statements are released on event morning on a strict First-Come, First-Served (FCFS) basis. Two teams selecting the same problem become direct 1v1 opponents.",
   },
   {
     id: "04",
-    question: "HOW IS IT SCORED?",
+    question: "WHAT HAPPENS IN ROUND 1 (BUILD)?",
     summary:
-      "Evaluated on architectural elegance, algorithmic depth, and resilience under adversarial stress-testing.",
+      "Each team engineers a functional, working solution for their selected Problem Statement from scratch within the allotted morning session, followed by a lunch break.",
   },
   {
     id: "05",
-    question: "FEES & ADMISSION?",
+    question: "WHAT HAPPENS IN ROUND 2 (CRACK & CHALLENGE)?",
     summary:
-      "100% free of charge. Dedicated compute clusters, API access, meals, and mentor architects provided.",
+      "Each team receives exactly 30 minutes to dissect their opponent's project, identifying architectural gaps, technical limitations, flaws, and missing features.",
+  },
+  {
+    id: "06",
+    question: "HOW DOES FINAL JUDGING & PITCHING WORK?",
+    summary:
+      "Both competing teams face the judges together: Step 1 — Each team pitches their own solution. Step 2 — Teams present the flaws and loopholes found in their opponent's project to demonstrate why their approach wins.",
   },
 ];
 

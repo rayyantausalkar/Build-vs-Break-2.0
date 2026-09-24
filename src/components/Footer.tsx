@@ -235,10 +235,11 @@ export default function Footer() {
         <div className="flex items-center gap-2.5">
           <span className="h-1.5 w-1.5 rounded-full bg-[#8B7CF6] shadow-[0_0_8px_#8B7CF6]" />
           <p className={`${MONO} text-[11px] sm:text-xs tracking-[0.2em] uppercase text-[#E8E2D6]/70`}>
-            Designed and Created by{" "}
-            <span className="font-semibold text-[#E8E2D6]">
-              Technical Team of ACM NeurOnyx
-            </span>
+            Organised by{" "}
+            <span className="font-semibold text-[#8B7CF6]">
+              Neuronyx | AIML Department
+            </span>{" "}
+            · Created by Technical Team of ACM NeurOnyx
           </p>
         </div>
       </div>

@@ -1739,9 +1739,8 @@ export default function Hero({
               {...fade(1.3)}
               className="max-w-md border-l-2 border-[#C4642E] pl-4 text-sm leading-relaxed text-[#E8E2D6]/70 sm:text-base lg:col-span-5"
             >
-              Construct with precision. Fracture with intent. Inside BvB, every
-              system is built to be broken — and every break sharpens the
-              build.
+              Main Event: 3rd October 2026. Organised by Neuronyx | AIML Department.
+              30 qualifying teams shortlisted via Quiz Round battle across 15 problem statements in head-to-head 1v1 duels.
             </motion.p>
 
             <motion.div
@@ -1754,13 +1753,15 @@ export default function Hero({
               >
                 {isRegistered ? "Dashboard" : "Register Now"}
               </PrimaryCta>
-              <SecondaryCta
-                href="/dashboard"
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.location.href = "/dashboard";
-                }}
-              />
+              {!isRegistered && (
+                <SecondaryCta
+                  href="/dashboard?find=true"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.location.href = "/dashboard?find=true";
+                  }}
+                />
+              )}
             </motion.div>
           </div>
 

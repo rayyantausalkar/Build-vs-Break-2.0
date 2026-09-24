@@ -455,15 +455,6 @@ export default function Navbar({ registerHref = "#register", onRegisterClick }: 
 
           {/* Desktop register */}
           <div className="hidden justify-self-end lg:flex lg:items-center lg:gap-3">
-            {!isRegistered && (
-              <a
-                href="/dashboard"
-                className={`${MONO} text-[10px] tracking-[0.16em] uppercase text-[#E8E2D6]/40 hover:text-[#E8E2D6] transition-colors`}
-              >
-                Find Entry
-              </a>
-            )}
-
             <RegisterButton
               href={isRegistered ? "/dashboard" : registerHref}
               onClick={(e) => handleRegister(e)}
@@ -611,18 +602,6 @@ export default function Navbar({ registerHref = "#register", onRegisterClick }: 
               >
                 {isRegistered ? "VIEW DASHBOARD" : "REGISTER NOW"}
               </RegisterButton>
-
-              {!isRegistered && (
-                <div className="text-center">
-                  <a
-                    href="/dashboard"
-                    onClick={() => setOpen(false)}
-                    className={`${MONO} text-[10px] tracking-[0.18em] uppercase text-[#E8E2D6]/50 hover:text-[#E8E2D6]`}
-                  >
-                    Already registered? Find entry &rarr;
-                  </a>
-                </div>
-              )}
             </motion.div>
 
             <motion.div
@@ -632,12 +611,12 @@ export default function Navbar({ registerHref = "#register", onRegisterClick }: 
               <span
                 className={`${MONO} text-[10px] uppercase tracking-[0.22em] text-[#E8E2D6]/45`}
               >
-                BVB // SYSTEM 01
+                BUILD VS BREAK
               </span>
               <span
                 className={`${MONO} text-[10px] uppercase tracking-[0.22em] text-[#E8E2D6]/45`}
               >
-                BVB // 2026
+                2026 EDITION
               </span>
             </motion.div>
           </motion.div>

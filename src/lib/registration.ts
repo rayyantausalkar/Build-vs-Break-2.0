@@ -1,10 +1,11 @@
 export interface Participant {
-  position: number;
+  position?: number;
   role: "captain" | "member";
   name: string;
   email: string;
   phone: string;
   college: string;
+  course?: string;
   branch: string;
   year: string;
 }
@@ -58,14 +59,29 @@ export function getSavedRegistration(): RegistrationRecord | null {
   return null;
 }
 
+export function isUserRegistered(): boolean {
+  const reg = getSavedRegistration();
+  return Boolean(reg && reg.registrationId && typeof reg.registrationId === "string" && reg.registrationId.trim().length > 0);
+}
+
 /**
- * Save registration record to browser localStorage.
+ * Save registration record to browser localStorage atomically.
  */
 export function saveRegistration(record: RegistrationRecord): void {
   if (typeof window === "undefined") return;
+  if (!record || !record.registrationId || typeof record.registrationId !== "string" || !record.registrationId.trim()) {
+    console.warn("Invalid registration record, refusing to save:", record);
+    return;
+  }
   try {
-    localStorage.setItem(STORAGE_KEY_ID, record.registrationId);
-    localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(record));
+    const cleanRecord: RegistrationRecord = {
+      ...record,
+      registrationId: record.registrationId.trim().toUpperCase(),
+      teamName: record.teamName?.trim() || "Registered Team",
+      status: record.status || "confirmed",
+    };
+    localStorage.setItem(STORAGE_KEY_ID, cleanRecord.registrationId);
+    localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(cleanRecord));
     window.dispatchEvent(new Event("bvb-registration-updated"));
   } catch (err) {
     console.warn("Could not save registration to localStorage:", err);
@@ -73,7 +89,7 @@ export function saveRegistration(record: RegistrationRecord): void {
 }
 
 /**
- * Clear saved registration record from browser localStorage.
+ * Clear saved registration record from browser localStorage atomically.
  */
 export function clearSavedRegistration(): void {
   if (typeof window === "undefined") return;
