@@ -160,8 +160,47 @@ function DustGlyph({ tone = "ember" }: { tone?: "violet" | "ember" | "ivory" | "
 }
 
 /* ------------------------------------------------------------------ */
-/*  Presets For FAQ, Contact & Footer                                 */
+/*  Presets For About, Timeline, Rules, FAQ, Contact & Footer         */
 /* ------------------------------------------------------------------ */
+
+export const ABOUT_SHARDS: ShardItem[] = [
+  { id: "a1", type: "crystal", x: 4, y: 18, size: 38, tone: "violet", rot: 15, dr: 8, dy: -12, dur: 8.4, delay: 0.2, parallax: 0.03 },
+  { id: "a2", type: "cube", x: 94, y: 14, size: 32, tone: "ember", rot: -16, dr: -7, dy: -10, dur: 9.1, delay: 0.7, parallax: 0.04 },
+  { id: "a3", type: "timeline-node", x: 3, y: 52, size: 34, tone: "ivory", rot: 0, dr: 6, dy: -9, dur: 7.6, delay: 0.4, parallax: 0.02 },
+  { id: "a4", type: "crystal", x: 95, y: 48, size: 40, tone: "ember", rot: -22, dr: 10, dy: -13, dur: 8.6, delay: 1.2, parallax: 0.04 },
+  { id: "a5", type: "diamond", x: 7, y: 84, size: 24, tone: "violet", rot: 45, dr: 12, dy: -7, dur: 7.2, delay: 0.5, parallax: 0.03 },
+  { id: "a6", type: "cube", x: 91, y: 82, size: 30, tone: "ivory", rot: 18, dr: -8, dy: -10, dur: 8.8, delay: 1.0, parallax: 0.03 },
+  { id: "a7", type: "crosshair", x: 18, y: 8, size: 20, rot: 0, dr: 0, dy: -4, dur: 11, delay: 0.2, parallax: 0.01 },
+  { id: "a8", type: "crosshair", x: 82, y: 92, size: 20, rot: 0, dr: 0, dy: -4, dur: 10, delay: 0.8, parallax: 0.01 },
+  { id: "a9", type: "dust", x: 10, y: 38, size: 10, tone: "ember", rot: 25, dr: 15, dy: -7, dur: 6.8, delay: 0.6, parallax: 0.05 },
+  { id: "a10", type: "dust", x: 89, y: 32, size: 9, tone: "violet", rot: -18, dr: 12, dy: -6, dur: 7.4, delay: 1.1, parallax: 0.04 },
+];
+
+export const TIMELINE_SHARDS: ShardItem[] = [
+  { id: "t1", type: "crystal", x: 4, y: 22, size: 36, tone: "violet", rot: 12, dr: 8, dy: -12, dur: 8.2, delay: 0.2, parallax: 0.03 },
+  { id: "t2", type: "cube", x: 94, y: 16, size: 30, tone: "ember", rot: -14, dr: -7, dy: -10, dur: 9.2, delay: 0.9, parallax: 0.04 },
+  { id: "t3", type: "timeline-node", x: 2, y: 68, size: 34, tone: "ivory", rot: 0, dr: 5, dy: -8, dur: 7.4, delay: 0.5, parallax: 0.02 },
+  { id: "t4", type: "crystal", x: 96, y: 58, size: 40, tone: "violet", rot: -20, dr: 10, dy: -13, dur: 8.8, delay: 1.4, parallax: 0.04 },
+  { id: "t5", type: "diamond", x: 8, y: 88, size: 22, tone: "ember", rot: 45, dr: 12, dy: -6, dur: 7.2, delay: 0.4, parallax: 0.03 },
+  { id: "t6", type: "cube", x: 91, y: 86, size: 28, tone: "ivory", rot: 16, dr: -8, dy: -9, dur: 8.5, delay: 1.1, parallax: 0.03 },
+  { id: "t7", type: "crosshair", x: 20, y: 10, size: 18, rot: 0, dr: 0, dy: -4, dur: 11, delay: 0.2, parallax: 0.01 },
+  { id: "t8", type: "crosshair", x: 80, y: 92, size: 18, rot: 0, dr: 0, dy: -4, dur: 10, delay: 0.8, parallax: 0.01 },
+  { id: "t9", type: "dust", x: 12, y: 44, size: 10, tone: "ember", rot: 24, dr: 16, dy: -7, dur: 6.6, delay: 0.7, parallax: 0.05 },
+  { id: "t10", type: "dust", x: 88, y: 42, size: 9, tone: "violet", rot: -16, dr: 14, dy: -6, dur: 7.3, delay: 1.2, parallax: 0.04 },
+];
+
+export const RULES_SHARDS: ShardItem[] = [
+  { id: "r1", type: "timeline-node", x: 5, y: 18, size: 36, tone: "violet", rot: 0, dr: 6, dy: -12, dur: 8.5, delay: 0.2, parallax: 0.03 },
+  { id: "r2", type: "crystal", x: 94, y: 15, size: 40, tone: "ember", rot: -18, dr: -8, dy: -14, dur: 9, delay: 0.8, parallax: 0.04 },
+  { id: "r3", type: "cube", x: 3, y: 55, size: 32, tone: "ivory", rot: 15, dr: 7, dy: -9, dur: 7.8, delay: 1.2, parallax: 0.02 },
+  { id: "r4", type: "crystal", x: 92, y: 62, size: 36, tone: "violet", rot: 25, dr: -10, dy: -11, dur: 8.2, delay: 0.4, parallax: 0.04 },
+  { id: "r5", type: "diamond", x: 8, y: 86, size: 24, tone: "ember", rot: 45, dr: 14, dy: -8, dur: 7.2, delay: 1.5, parallax: 0.03 },
+  { id: "r6", type: "cube", x: 90, y: 88, size: 28, tone: "violet", rot: -12, dr: 6, dy: -10, dur: 8.8, delay: 0.9, parallax: 0.03 },
+  { id: "r7", type: "crosshair", x: 15, y: 8, size: 18, rot: 0, dr: 0, dy: -4, dur: 12, delay: 0.3, parallax: 0.01 },
+  { id: "r8", type: "crosshair", x: 84, y: 94, size: 18, rot: 0, dr: 0, dy: -4, dur: 10, delay: 1.1, parallax: 0.01 },
+  { id: "r9", type: "dust", x: 12, y: 38, size: 10, tone: "ember", rot: 22, dr: 16, dy: -7, dur: 6.8, delay: 0.6, parallax: 0.05 },
+  { id: "r10", type: "dust", x: 88, y: 40, size: 9, tone: "violet", rot: -18, dr: 12, dy: -6, dur: 7.4, delay: 1.3, parallax: 0.04 },
+];
 
 export const FAQ_SHARDS: ShardItem[] = [
   { id: "f1", type: "crystal", x: 6, y: 15, size: 36, tone: "violet", rot: 14, dr: 8, dy: -12, dur: 8, delay: 0.2, parallax: 0.03 },

@@ -135,58 +135,35 @@ export default function FAQ() {
         </div>
 
         {/* ------------------------------------------------------------ */}
-        {/* Awwwards-Level 3D Tactile Floating Pills                     */}
+        {/* Sleek Gradient FAQ Accordion Pills                           */}
         {/* ------------------------------------------------------------ */}
-        <div className="mt-14 sm:mt-18 space-y-4 sm:space-y-5">
+        <div className="mt-14 sm:mt-18 space-y-3.5 sm:space-y-4">
           {FAQS.map((item, idx) => {
             const isOpen = openIdx === idx;
             return (
               <motion.div
                 key={item.id}
-                whileHover={reduced ? {} : { y: -3 }}
-                className={`group relative overflow-hidden backdrop-blur-2xl rounded-[2rem] sm:rounded-[2.25rem] transition-all duration-500 select-none ${
+                whileHover={reduced ? {} : { y: -2 }}
+                className={`group relative overflow-hidden backdrop-blur-xl rounded-2xl sm:rounded-3xl transition-all duration-300 select-none ${
                   isOpen
-                    ? "border border-[#8B7CF6]/40 shadow-[0_24px_48px_-15px_rgba(0,0,0,0.85)]"
-                    : "border border-[#E8E2D6]/12 hover:border-[#8B7CF6]/30 hover:shadow-[0_16px_36px_-12px_rgba(0,0,0,0.75)]"
+                    ? "border border-[#8B7CF6]/50 shadow-[0_14px_34px_-10px_rgba(0,0,0,0.7),0_0_24px_-4px_rgba(139,124,246,0.22)]"
+                    : "border border-[#E8E2D6]/12 hover:border-[#8B7CF6]/40 shadow-[0_4px_20px_-8px_rgba(0,0,0,0.5)] hover:shadow-[0_8px_24px_-6px_rgba(139,124,246,0.18)]"
                 }`}
                 style={{
                   background: isOpen
-                    ? "radial-gradient(ellipse at 35% 25%, #291F38 0%, #1F1729 45%, #181220 75%, #120D1A 100%)"
-                    : "radial-gradient(ellipse at 35% 25%, #221A2F 0%, #1A1324 45%, #150F1D 75%, #0F0A15 100%)",
-                  boxShadow: isOpen
-                    ? "inset -6px -8px 20px rgba(0, 0, 0, 0.85), inset 4px 5px 14px rgba(255, 255, 255, 0.12), inset 0 0 12px rgba(139, 124, 246, 0.15), 0 24px 48px -12px rgba(0, 0, 0, 0.8)"
-                    : "inset -4px -6px 16px rgba(0, 0, 0, 0.8), inset 2px 3px 10px rgba(255, 255, 255, 0.08), inset 0 0 6px rgba(139, 124, 246, 0.08), 0 16px 36px -10px rgba(0, 0, 0, 0.7)",
+                    ? "linear-gradient(115deg, rgba(139, 124, 246, 0.28) 0%, rgba(37, 26, 52, 0.92) 48%, rgba(196, 100, 46, 0.2) 100%)"
+                    : "linear-gradient(115deg, rgba(139, 124, 246, 0.14) 0%, rgba(26, 19, 36, 0.8) 50%, rgba(196, 100, 46, 0.1) 100%)",
                 }}
               >
-                {/* 3D Curvature Specular Highlight (Top-Left Gloss) */}
+                {/* Subtle Ambient Gradient Flow on Hover */}
                 <span
                   aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 rounded-[inherit]"
-                  style={{
-                    background:
-                      "radial-gradient(ellipse at 28% 20%, rgba(255, 255, 255, 0.14) 0%, rgba(139, 124, 246, 0.08) 26%, transparent 60%)",
-                  }}
-                />
-
-                {/* 3D Ambient Bounce Light (Bottom-Right Ember Rim) */}
-                <span
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 rounded-[inherit]"
-                  style={{
-                    background:
-                      "radial-gradient(ellipse at 76% 82%, rgba(196, 100, 46, 0.1) 0%, transparent 52%)",
-                  }}
-                />
-
-                {/* Exterior Atmospheric Dual-Color Glow Halo */}
-                <span
-                  aria-hidden="true"
-                  className={`pointer-events-none absolute -inset-2 rounded-[2.25rem] sm:rounded-[2.5rem] bg-[linear-gradient(135deg,#8B7CF6_0%,transparent_50%,#C4642E_100%)] blur-lg transition-opacity duration-500 ${
-                    isOpen ? "opacity-35" : "opacity-0 group-hover:opacity-35"
+                  className={`pointer-events-none absolute -inset-px rounded-[inherit] bg-gradient-to-r from-[#8B7CF6]/20 via-transparent to-[#C4642E]/20 transition-opacity duration-300 ${
+                    isOpen ? "opacity-100" : "opacity-0 group-hover:opacity-100"
                   }`}
                 />
 
-                {/* 3D Pill Header Trigger */}
+                {/* Pill Header Trigger */}
                 <button
                   type="button"
                   onClick={() => toggle(idx)}
@@ -215,19 +192,19 @@ export default function FAQ() {
                     </span>
                   </div>
 
-                  {/* 3D Orb Toggle Indicator */}
+                  {/* Clean Minimalist Toggle Indicator */}
                   <div
-                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border transition-all duration-300 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)] ${
+                    className={`flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full border transition-all duration-300 ${
                       isOpen
-                        ? "border-[#8B7CF6] bg-[#8B7CF6] text-[#1A1410] rotate-45 shadow-[0_0_18px_rgba(139,124,246,0.5)]"
-                        : "border-[#E8E2D6]/15 bg-[#E8E2D6]/[0.05] text-[#E8E2D6]/70 group-hover:border-[#8B7CF6] group-hover:bg-[#8B7CF6] group-hover:text-[#1A1410] group-hover:scale-105"
+                        ? "border-[#8B7CF6] bg-[#8B7CF6] text-[#1A1410] rotate-45 shadow-[0_0_16px_rgba(139,124,246,0.35)]"
+                        : "border-[#E8E2D6]/15 bg-[#E8E2D6]/[0.04] text-[#E8E2D6]/70 group-hover:border-[#8B7CF6]/60 group-hover:bg-[#8B7CF6]/15 group-hover:text-[#8B7CF6]"
                     }`}
                   >
                     <Plus className="h-4 w-4 transition-transform duration-300" />
                   </div>
                 </button>
 
-                {/* 3D Expanded Drawer Content */}
+                {/* Expanded Drawer Content */}
                 <AnimatePresence initial={false}>
                   {isOpen && (
                     <motion.div

@@ -1,10 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion, useReducedMotion } from "motion/react";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  motion,
+  useMotionValue,
+  useMotionValueEvent,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+} from "motion/react";
+import {
+  ABOUT_SHARDS,
+  CircuitTrack,
+  FloatingShards,
+} from "./FloatingShards";
 
 /* ------------------------------------------------------------------ */
-/*  Shared design tokens — mirrors Hero.jsx / Navbar.jsx exactly       */
+/*  Design Tokens                                                     */
 /* ------------------------------------------------------------------ */
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -15,16 +27,15 @@ const MONO =
   "font-[family-name:JetBrains_Mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace]";
 
 const VIOLET = "#8B7CF6";
-const DEEP = "#3B2F4F";
 const EMBER = "#C4642E";
 const IVORY = "#E8E2D6";
-const NIGHT = "#2B2138";
-const ABYSS = "#1F1729";
+const DEEP = "#1C1428";
+const ABYSS = "#120D1A";
 
 const GRAD_BUILD =
-  "bg-[linear-gradient(100deg,#8B7CF6_8%,#E8E2D6_96%)] bg-clip-text pb-[0.04em] pr-[0.06em] text-transparent";
+  "bg-[linear-gradient(100deg,#8B7CF6_8%,#E8E2D6_96%)] bg-clip-text text-transparent";
 const GRAD_BREAK =
-  "bg-[linear-gradient(100deg,#E8E2D6_4%,#C4642E_92%)] bg-clip-text pb-[0.04em] pr-[0.06em] text-transparent";
+  "bg-[linear-gradient(100deg,#E8E2D6_4%,#C4642E_92%)] bg-clip-text text-transparent";
 
 const GRAIN = {
   backgroundImage:
@@ -34,27 +45,33 @@ const GRAIN = {
 const NS = { vectorEffect: "non-scaling-stroke" };
 
 /* ------------------------------------------------------------------ */
-/*  Compact isometric glyph — "assembled / fractured / rebuilt"       */
-/*                                                                     */
-/*  A small core structure stays fixed. Two fragments sit displaced,   */
-/*  ghost outlines mark the slots they came from. Hovering (or         */
-/*  focusing) the glyph draws every fragment back into its slot —      */
-/*  build, break, rethink, rebuilt — in one contained gesture.         */
+/*  Isometric 3D Math for Kinetic Duality Morphing                     */
 /* ------------------------------------------------------------------ */
 
 const K = Math.sqrt(3) / 2;
-const CUBE_S = 30;
-const VB = 220;
+const CUBE_S = 36;
+const VB = 340;
 
 const iso =
-  (ox, oy, s = CUBE_S) =>
-  (x, y, z) =>
-    [ox + (x - y) * K * s, oy + (x + y) * 0.5 * s - z * s];
+  (ox: number, oy: number, s: number = CUBE_S) =>
+  (x: number, y: number, z: number): [number, number] => [
+    ox + (x - y) * K * s,
+    oy + (x + y) * 0.5 * s - z * s,
+  ];
 
-const fmt = (n) => Math.round(n * 10) / 10;
-const pts = (list) => list.map(([x, y]) => `${fmt(x)},${fmt(y)}`).join(" ");
+const fmt = (n: number) => Math.round(n * 10) / 10;
+const pts = (list: [number, number][]) =>
+  list.map(([x, y]) => `${fmt(x)},${fmt(y)}`).join(" ");
 
-function box(p, x, y, z, w = 1, d = 1, h = 1) {
+function box(
+  p: (x: number, y: number, z: number) => [number, number],
+  x: number,
+  y: number,
+  z: number,
+  w = 1,
+  d = 1,
+  h = 1
+) {
   return {
     top: pts([
       p(x, y, z + h),
@@ -74,455 +91,466 @@ function box(p, x, y, z, w = 1, d = 1, h = 1) {
       p(x + w, y + d, z + h),
       p(x + w, y, z + h),
     ]),
-    hex: pts([
-      p(x, y, z + h),
-      p(x + w, y, z + h),
-      p(x + w, y, z),
-      p(x + w, y + d, z),
-      p(x, y + d, z),
-      p(x, y + d, z + h),
-    ]),
     center: p(x + w / 2, y + d / 2, z + h / 2),
   };
 }
 
-/* [top, left, right] face colours */
-const TONES = {
-  violet: [VIOLET, DEEP, ABYSS],
-  deep: [DEEP, NIGHT, ABYSS],
+/* 8 Facets composing the Duality Monolith */
+interface MonolithFacet {
+  id: string;
+  slot: [number, number, number];
+  vector: [number, number]; // dispersion vector in pixels
+  rot: number; // max rotation degrees
+  tone: "violet" | "ember" | "ivory" | "deep";
+}
+
+const FACETS: MonolithFacet[] = [
+  { id: "c1", slot: [0, 0, 0], vector: [-28, 22], rot: -18, tone: "deep" },
+  { id: "c2", slot: [1, 0, 0], vector: [32, 14], rot: 24, tone: "violet" },
+  { id: "c3", slot: [0, 1, 0], vector: [-34, -18], rot: -22, tone: "ember" },
+  { id: "c4", slot: [1, 1, 0], vector: [48, 8], rot: 32, tone: "ember" },
+  { id: "c5", slot: [0, 0, 1], vector: [-14, -40], rot: -15, tone: "ivory" },
+  { id: "c6", slot: [1, 0, 1], vector: [38, -48], rot: 28, tone: "violet" },
+  { id: "c7", slot: [0, 1, 1], vector: [-42, -36], rot: -30, tone: "violet" },
+  { id: "c8", slot: [1, 1, 1], vector: [54, -28], rot: 40, tone: "ember" },
+];
+
+const G_P = iso(170, 215, CUBE_S);
+
+const TONES: Record<string, [string, string, string]> = {
+  violet: [VIOLET, "#5A4EB3", DEEP],
+  ember: [EMBER, "#8F3D17", ABYSS],
   ivory: [IVORY, VIOLET, DEEP],
-  ember: [EMBER, DEEP, NIGHT],
+  deep: [DEEP, "#150E20", ABYSS],
 };
 
-function Cube({ f, tone }) {
-  const [top, left, right] = TONES[tone];
+function FacetCube({
+  facet,
+  entropy,
+}: {
+  facet: MonolithFacet;
+  entropy: number; // 0 (solid) to 1 (scattered)
+}) {
+  const f = box(G_P, facet.slot[0], facet.slot[1], facet.slot[2]);
+  const [top, left, right] = TONES[facet.tone] || TONES.violet;
+
+  const dx = facet.vector[0] * entropy;
+  const dy = facet.vector[1] * entropy;
+  const r = facet.rot * entropy;
+
   return (
-    <g stroke={IVORY} strokeOpacity="0.2" strokeWidth="0.8" strokeLinejoin="round">
+    <motion.g
+      animate={{
+        x: dx,
+        y: dy,
+        rotate: r,
+      }}
+      transition={{ type: "spring", stiffness: 220, damping: 24 }}
+      style={{ transformOrigin: `${f.center[0]}px ${f.center[1]}px` }}
+      stroke={IVORY}
+      strokeOpacity={0.25 + entropy * 0.25}
+      strokeWidth={0.8}
+      strokeLinejoin="round"
+    >
       <polygon points={f.left} fill={left} />
       <polygon points={f.right} fill={right} />
       <polygon points={f.top} fill={top} />
-    </g>
-  );
-}
-
-const G_P = iso(70, 150);
-
-/* the part of the structure that never moves */
-const CORE = [
-  [0, 0, 0, "deep"],
-  [1, 0, 0, "violet"],
-  [0, 1, 0, "violet"],
-  [0, 0, 1, "ivory"],
-].map(([x, y, z, tone]) => ({ key: `core-${x}${y}${z}`, tone, f: box(G_P, x, y, z) }));
-
-/* fragments: their home slot, and the displacement they rest at
-   before they're drawn back in */
-const FRAGMENTS = [
-  { key: "frag-a", tone: "ember", slot: [1, 1, 0], rest: [42, 10] },
-  { key: "frag-b", tone: "violet", slot: [1, 0, 1], rest: [30, -34] },
-];
-
-function AssemblyGlyph({ reduced }) {
-  const [active, setActive] = useState(false);
-  const [locked, setLocked] = useState(false);
-
-  /* `locked` flips true a beat after the fragments start homing in — right
-     around when the spring settles — so the flash and the exposed slot
-     ticks land at the moment of contact rather than the start of the move. */
-  useEffect(() => {
-    if (reduced) {
-      setLocked(active);
-      return undefined;
-    }
-    if (!active) {
-      setLocked(false);
-      return undefined;
-    }
-    const t = window.setTimeout(() => setLocked(true), 420);
-    return () => window.clearTimeout(t);
-  }, [active, reduced]);
-
-  return (
-    <motion.div
-      role="img"
-      aria-label="A small structure of geometric blocks, with two fragments that draw back into place on hover, representing building, breaking and rebuilding."
-      tabIndex={0}
-      onHoverStart={() => setActive(true)}
-      onHoverEnd={() => setActive(false)}
-      onFocus={() => setActive(true)}
-      onBlur={() => setActive(false)}
-      initial={reduced ? false : { opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-10%" }}
-      transition={{ duration: 0.8, ease: EASE }}
-      style={reduced ? undefined : { perspective: 800 }}
-      className="group relative aspect-square w-full max-w-[280px] cursor-pointer outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-[#E8E2D6]/50 sm:max-w-[320px]"
-    >
-      <motion.svg
-        viewBox={`0 0 ${VB} ${VB}`}
-        fill="none"
-        focusable="false"
-        aria-hidden="true"
-        animate={
-          reduced
-            ? undefined
-            : { rotateX: active ? -3 : 0, rotateY: active ? 3 : 0 }
-        }
-        transition={{ type: "spring", stiffness: 120, damping: 16 }}
-        style={{ transformStyle: "preserve-3d" }}
-        className="h-full w-full overflow-visible"
-      >
-        {/* isometric floor grid, echoes the Hero's construction plane */}
-        <path
-          d={`M${G_P(-0.5, -0.5, 0)[0]} ${G_P(-0.5, -0.5, 0)[1]}L${G_P(2.5, -0.5, 0)[0]} ${G_P(2.5, -0.5, 0)[1]}L${G_P(2.5, 2.5, 0)[0]} ${G_P(2.5, 2.5, 0)[1]}L${G_P(-0.5, 2.5, 0)[0]} ${G_P(-0.5, 2.5, 0)[1]}Z`}
-          stroke={IVORY}
-          strokeOpacity="0.08"
-          strokeWidth="1"
-          {...NS}
-        />
-
-        {/* ghost slots + leader lines, fade as fragments come home */}
-        {FRAGMENTS.map((frg) => {
-          const [x, y, z] = frg.slot;
-          const f = box(G_P, x, y, z);
-          const [cx, cy] = f.center;
-          return (
-            <motion.g
-              key={`ghost-${frg.key}`}
-              animate={{ opacity: reduced ? 0.35 : active ? 0 : 0.55 }}
-              transition={{ duration: 0.5, ease: EASE }}
-            >
-              <polygon
-                points={f.hex}
-                stroke={IVORY}
-                strokeWidth="1"
-                strokeDasharray="3 4"
-                strokeLinejoin="round"
-                fill="none"
-                {...NS}
-              />
-              <line
-                x1={cx}
-                y1={cy}
-                x2={cx + frg.rest[0]}
-                y2={cy + frg.rest[1]}
-                stroke={EMBER}
-                strokeOpacity="0.6"
-                strokeWidth="1"
-                strokeDasharray="2 4"
-                {...NS}
-              />
-            </motion.g>
-          );
-        })}
-
-        {/* the fixed core */}
-        {CORE.map((c) => (
-          <Cube key={c.key} f={c.f} tone={c.tone} />
-        ))}
-
-        {/* the two fragments — animate home on hover / focus */}
-        {FRAGMENTS.map((frg) => {
-          const [x, y, z] = frg.slot;
-          const f = box(G_P, x, y, z);
-          const target = active ? [0, 0] : frg.rest;
-          return (
-            <motion.g
-              key={frg.key}
-              animate={{ x: target[0], y: target[1] }}
-              initial={false}
-              transition={
-                reduced
-                  ? { duration: 0 }
-                  : { type: "spring", stiffness: 170, damping: 20 }
-              }
-            >
-              <Cube f={f} tone={frg.tone} />
-            </motion.g>
-          );
-        })}
-
-        {/* a few dust motes kicked up while the fragments are in transit —
-            gone again the moment they lock, so they read as debris rather
-            than decoration */}
-        {!reduced &&
-          FRAGMENTS.map((frg, i) => {
-            const [x, y, z] = frg.slot;
-            const f = box(G_P, x, y, z);
-            const [cx, cy] = f.center;
-            const specks = [
-              [cx - 10, cy + 6],
-              [cx + 8, cy - 9],
-            ];
-            return specks.map(([sx, sy], j) => (
-              <motion.rect
-                key={`dust-${i}-${j}`}
-                x={sx}
-                y={sy}
-                width="2.5"
-                height="2.5"
-                fill={j % 2 ? EMBER : VIOLET}
-                initial={false}
-                animate={
-                  active && !locked
-                    ? { opacity: 0.75, y: -6 }
-                    : { opacity: 0, y: 0 }
-                }
-                transition={{ duration: 0.5, delay: j * 0.05, ease: EASE }}
-              />
-            ));
-          })}
-
-        {/* lock flash + brief technical ticks at the instant each fragment
-            reaches its slot — the "system confirms" beat */}
-        {!reduced &&
-          FRAGMENTS.map((frg) => {
-            const [x, y, z] = frg.slot;
-            const f = box(G_P, x, y, z);
-            const [cx, cy] = f.center;
-            return (
-              <g key={`lock-${frg.key}`}>
-                <motion.circle
-                  cx={cx}
-                  cy={cy}
-                  r="1"
-                  fill={IVORY}
-                  initial={false}
-                  animate={
-                    locked
-                      ? { opacity: [0, 0.85, 0], scale: [0.4, 5, 6.5] }
-                      : { opacity: 0, scale: 0.4 }
-                  }
-                  transition={{ duration: 0.55, ease: EASE }}
-                  style={{ transformOrigin: `${cx}px ${cy}px` }}
-                />
-                <motion.path
-                  d={`M${cx - 7} ${cy}H${cx - 3}M${cx + 3} ${cy}H${cx + 7}M${cx} ${cy - 7}V${cy - 3}M${cx} ${cy + 3}V${cy + 7}`}
-                  stroke={IVORY}
-                  strokeOpacity="0.7"
-                  strokeWidth="1"
-                  initial={false}
-                  animate={{ opacity: locked ? [0, 1, 0] : 0 }}
-                  transition={{ duration: 0.7, ease: EASE }}
-                  {...NS}
-                />
-              </g>
-            );
-          })}
-      </motion.svg>
-
-      {/* status label — swaps as the structure resolves */}
-      <div className="pointer-events-none absolute -bottom-7 left-0 sm:-bottom-8">
-        <span
-          className={`${MONO} inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.2em] text-[#E8E2D6]/55 sm:text-[10px] sm:tracking-[0.22em]`}
-        >
-          <span
-            aria-hidden="true"
-            className={`h-1.5 w-1.5 shrink-0 transition-colors duration-300 ${
-              active ? "bg-[#8B7CF6]" : "bg-[#C4642E]"
-            }`}
-          />
-          {active ? "STATE // REBUILT" : "STATE // FRACTURED"}
-        </span>
-      </div>
-    </motion.div>
+    </motion.g>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/*  Small shared bits                                                  */
+/*  The Duality Engine — Interactive Morphing Monolith                */
 /* ------------------------------------------------------------------ */
 
-function Label({ children, dot = "bg-[#8B7CF6]", className = "" }) {
-  return (
-    <span
-      className={`${MONO} inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.2em] text-[#E8E2D6]/55 sm:text-[11px] sm:tracking-[0.22em] ${className}`}
-    >
-      <span aria-hidden="true" className={`h-1.5 w-1.5 shrink-0 ${dot}`} />
-      {children}
-    </span>
-  );
-}
+function DualityEngine({
+  entropy,
+  reduced,
+}: {
+  entropy: number;
+  reduced: boolean;
+}) {
+  const stateColor =
+    entropy < 0.35 ? VIOLET : entropy > 0.65 ? EMBER : IVORY;
 
-function Reveal({ children, delay = 0, y = 16, reduced, className = "" }) {
   return (
-    <motion.div
-      initial={reduced ? false : { opacity: 0, y }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-12%" }}
-      transition={{ duration: 0.75, delay, ease: EASE }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-const PRINCIPLES = [
-  {
-    n: "01",
-    title: "BUILD",
-    accent: VIOLET,
-    body: "Construct with intention. Every structure starts as a deliberate choice, not a default.",
-  },
-  {
-    n: "02",
-    title: "BREAK",
-    accent: EMBER,
-    body: "Challenge assumptions. Pressure-test the build until the weak seams show themselves.",
-  },
-  {
-    n: "03",
-    title: "RETHINK",
-    accent: IVORY,
-    body: "Find another way. Fold what broke into a sharper version of the build.",
-  },
-];
-
-function PrincipleRow({ item, delay, reduced }) {
-  return (
-    <Reveal
-      delay={delay}
-      reduced={reduced}
-      className="group relative border-t border-[#E8E2D6]/10 py-6 first:border-t-0 sm:py-7"
-    >
-      {/* a very soft, accent-tinted response behind the row — only visible
-          on hover/focus, never competing with the copy above it */}
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-y-0 -inset-x-4 opacity-0 transition-opacity duration-500 group-hover:opacity-100 sm:-inset-x-6"
+    <div className="relative mx-auto w-full max-w-[540px] select-none">
+      {/* Dynamic Background Glow changing from Violet to Ember */}
+      <div
+        className="pointer-events-none absolute -inset-8 rounded-full blur-3xl opacity-50 transition-all duration-300"
         style={{
-          background: `radial-gradient(60% 100% at 0% 50%, ${item.accent}14, transparent 70%)`,
+          background: `radial-gradient(circle at ${entropy * 100}% 50%, ${stateColor}40 0%, transparent 70%)`,
         }}
       />
 
-      {/* corner registration tick, revealed with the row — echoes the
-          Hero / Timeline "system reference" marks */}
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute right-0 top-6 hidden h-2 w-2 -translate-y-1/2 scale-0 opacity-0 transition-all duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] group-hover:scale-100 group-hover:opacity-70 sm:block"
-        style={{ borderTop: `1px solid ${item.accent}`, borderRight: `1px solid ${item.accent}` }}
-      />
+      {/* Main Front Stage (cardless, seamless) */}
+      <div className="relative w-full">
+        {/* 3D Isometric Viewport */}
+        <div className="relative flex aspect-square w-full items-center justify-center">
+          {/* Radar Target Guides */}
+          <div
+            className={`pointer-events-none absolute inset-6 rounded-full border border-dashed border-[#E8E2D6]/10 ${
+              reduced ? "" : "animate-[spin_60s_linear_infinite]"
+            }`}
+          />
+          <div className="pointer-events-none absolute inset-16 rounded-full border border-[#E8E2D6]/5" />
+          <div className="pointer-events-none absolute inset-x-8 top-1/2 h-px -translate-y-1/2 bg-gradient-to-r from-transparent via-[#E8E2D6]/10 to-transparent" />
+          <div className="pointer-events-none absolute inset-y-8 left-1/2 w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-[#E8E2D6]/10 to-transparent" />
 
-      <div className="relative flex flex-col gap-3 sm:flex-row sm:items-baseline sm:gap-6 lg:gap-10">
-        <span
-          className={`${MONO} shrink-0 text-xs tracking-[0.2em] text-[#E8E2D6]/40 transition-colors duration-300 group-hover:text-[#E8E2D6]/70 sm:text-sm`}
-        >
-          {item.n}
-        </span>
+          {/* SVG Monolith Kinetic Engine */}
+          <svg
+            viewBox={`0 0 ${VB} ${VB}`}
+            fill="none"
+            aria-hidden="true"
+            className="relative z-10 h-full w-full overflow-visible drop-shadow-[0_8px_24px_rgba(0,0,0,0.7)]"
+          >
+            {/* Ground Blueprint Wireframe Plane */}
+            <path
+              d={`M${G_P(-0.5, -0.5, 0)[0]} ${G_P(-0.5, -0.5, 0)[1]}L${G_P(2.5, -0.5, 0)[0]} ${G_P(2.5, -0.5, 0)[1]}L${G_P(2.5, 2.5, 0)[0]} ${G_P(2.5, 2.5, 0)[1]}L${G_P(-0.5, 2.5, 0)[0]} ${G_P(-0.5, 2.5, 0)[1]}Z`}
+              stroke={stateColor}
+              strokeOpacity={0.12}
+              strokeWidth="1"
+              {...NS}
+            />
 
-        <span
-          aria-hidden="true"
-          className="hidden h-px w-8 shrink-0 self-center transition-[width] duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] group-hover:w-14 sm:block"
-          style={{ backgroundColor: item.accent }}
-        />
+            {/* 8 Dynamic Facets Rendering with Spring-loaded Displacement */}
+            {FACETS.map((facet) => (
+              <FacetCube
+                key={facet.id}
+                facet={facet}
+                entropy={entropy}
+              />
+            ))}
 
-        <h3
-          className={`${DISPLAY} shrink-0 text-2xl font-bold uppercase tracking-[-0.01em] transition-transform duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1 sm:w-48 sm:text-3xl lg:w-56`}
-          style={{ color: item.accent === IVORY ? IVORY : item.accent }}
-        >
-          {item.title}
-        </h3>
-
-        <p className="max-w-md text-sm leading-relaxed text-[#E8E2D6]/65 sm:text-base">
-          {item.body}
-        </p>
+            {/* Stress Fracture Laser Sparks at High Entropy */}
+            {entropy > 0.4 && (
+              <g stroke={EMBER} strokeWidth="1" opacity={entropy} {...NS}>
+                <line x1="130" y1="180" x2="210" y2="230" strokeDasharray="4 4" />
+                <line x1="170" y1="140" x2="190" y2="260" strokeDasharray="3 3" />
+                <circle cx="170" cy="215" r={16 * entropy} stroke={EMBER} strokeOpacity="0.4" fill="none" />
+              </g>
+            )}
+          </svg>
+        </div>
       </div>
-    </Reveal>
+    </div>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/*  About                                                              */
+/*  The Three Phases — Quiz, Build, Break                              */
+/* ------------------------------------------------------------------ */
+
+interface PhaseRound {
+  num: string;
+  name: string;
+  stage: string;
+  axiom: string;
+  tag: string;
+  details: string;
+  accent: string;
+  entropyVal: number;
+}
+
+const PHASES: PhaseRound[] = [
+  {
+    num: "01",
+    name: "QUIZ",
+    stage: "ROUND 01",
+    axiom: "CORE APTITUDE",
+    tag: "RAPID ELIMINATION",
+    details:
+      "A fast-paced technical screening round evaluating algorithmic thinking, computer science fundamentals, data structures, and programming logic under strict time limits to filter the top qualifying squads.",
+    accent: IVORY,
+    entropyVal: 0.05,
+  },
+  {
+    num: "02",
+    name: "BUILD",
+    stage: "ROUND 02",
+    axiom: "LIVE ARCHITECTURE",
+    tag: "PROTOTYPE SPRINT",
+    details:
+      "The core engineering trial. Qualified squads build innovative, production-grade systems and AI-powered solutions entirely live from scratch—strictly zero pre-built repositories, evaluated on scalability and code quality.",
+    accent: VIOLET,
+    entropyVal: 0.45,
+  },
+  {
+    num: "03",
+    name: "BREAK",
+    stage: "ROUND 03",
+    axiom: "ADVERSARIAL STRESS",
+    tag: "DEBUG & DESTROY",
+    details:
+      "The battlefield inversion. Teams switch roles to identify vulnerabilities, hunt obscure edge cases, reverse-engineer, and debug complex codebases under relentless adversarial pressure to expose every weak link.",
+    accent: EMBER,
+    entropyVal: 0.95,
+  },
+];
+
+function InteractiveBlade({
+  phase,
+  index,
+  onHover,
+}: {
+  phase: PhaseRound;
+  index: number;
+  onHover: (target: number) => void;
+}) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <motion.div
+      onMouseEnter={() => {
+        setHovered(true);
+        onHover(phase.entropyVal);
+      }}
+      onMouseLeave={() => setHovered(false)}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, delay: index * 0.1, ease: EASE }}
+      className="group relative flex flex-col lg:flex-row lg:items-center justify-between border-t border-[#E8E2D6]/10 py-8 lg:py-10 transition-all duration-500 cursor-pointer overflow-hidden gap-6"
+    >
+      {/* Background Hover Aura Flare */}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+        style={{
+          background: `radial-gradient(800px circle at 0% 50%, ${phase.accent}14, transparent 65%)`,
+        }}
+      />
+
+      {/* Left: Number + Monumental Title + Detailed Explanation */}
+      <div className="relative z-10 flex flex-col sm:flex-row sm:items-start gap-5 sm:gap-8 lg:max-w-[65%]">
+        <div className="flex sm:flex-col items-center sm:items-start gap-3 sm:gap-1 shrink-0 pt-1">
+          <span
+            className={`${MONO} text-xs sm:text-sm tracking-[0.25em] text-[#E8E2D6]/40 transition-colors duration-300 group-hover:text-white`}
+          >
+            {phase.num}
+          </span>
+          <span
+            className={`${MONO} text-[10px] tracking-widest uppercase font-semibold text-[#E8E2D6]/30 sm:mt-1`}
+          >
+            {phase.stage}
+          </span>
+        </div>
+
+        <div>
+          <h3
+            className={`${DISPLAY} text-3xl sm:text-5xl lg:text-6xl font-extrabold uppercase tracking-tight text-white transition-transform duration-500 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-2`}
+          >
+            {phase.name}
+          </h3>
+          <p
+            className={`${MONO} mt-2.5 text-xs sm:text-sm leading-relaxed text-[#E8E2D6]/65 transition-colors duration-300 group-hover:text-[#E8E2D6]/90`}
+          >
+            {phase.details}
+          </p>
+        </div>
+      </div>
+
+      {/* Right: Axiom & Tag + Arrow */}
+      <div className="relative z-10 flex items-center justify-between lg:justify-end gap-6 sm:gap-10 shrink-0 border-t border-[#E8E2D6]/5 pt-4 lg:border-t-0 lg:pt-0">
+        <div className="flex flex-col items-start lg:items-end gap-1">
+          <span
+            className={`${MONO} text-xs sm:text-sm font-bold tracking-[0.2em] uppercase transition-colors duration-300`}
+            style={{ color: hovered ? phase.accent : `${phase.accent}90` }}
+          >
+            {phase.axiom}
+          </span>
+
+          <span
+            className={`${MONO} text-[10px] sm:text-xs tracking-[0.2em] text-[#E8E2D6]/40 uppercase`}
+          >
+            // {phase.tag}
+          </span>
+        </div>
+
+        {/* Kinetic Chevron Indicator */}
+        <span
+          className={`${MONO} text-base transition-transform duration-300 group-hover:translate-x-2`}
+          style={{ color: phase.accent }}
+        >
+          →
+        </span>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Main Awwwards About Component                                      */
 /* ------------------------------------------------------------------ */
 
 export default function About() {
   const reduced = Boolean(useReducedMotion());
+  const sectionRef = useRef<HTMLElement>(null);
+  const cubeStageRef = useRef<HTMLDivElement>(null);
+  const [entropy, setEntropy] = useState<number>(0);
+
+  /* Scroll-driven cube fracture: remains solid when entering, breaks as you scroll down past it */
+  const { scrollYProgress } = useScroll({
+    target: cubeStageRef,
+    offset: ["start 45%", "end 15%"],
+  });
+
+  const smoothEntropy = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 24,
+    restDelta: 0.001,
+  });
+
+  useMotionValueEvent(smoothEntropy, "change", (latest) => {
+    if (!reduced) {
+      const clamped = Math.max(0, Math.min(1, latest));
+      setEntropy(clamped);
+    }
+  });
+
+  useEffect(() => {
+    if (!reduced) {
+      const current = Math.max(0, Math.min(1, smoothEntropy.get()));
+      setEntropy(current);
+    }
+  }, [reduced, smoothEntropy]);
+
+  /* Mouse Parallax Coordinates */
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const smoothX = useSpring(mouseX, { stiffness: 50, damping: 20 });
+  const smoothY = useSpring(mouseY, { stiffness: 50, damping: 20 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    if (reduced) return;
+    const rect = sectionRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    mouseX.set(e.clientX - rect.left);
+    mouseY.set(e.clientY - rect.top);
+  };
 
   return (
     <section
+      ref={sectionRef}
+      onMouseMove={handleMouseMove}
       id="about"
       aria-label="About — the BvB philosophy"
-      className="relative isolate w-full overflow-hidden bg-[#1A1410] py-24 text-[#E8E2D6] sm:py-28 lg:py-36"
+      className="relative isolate w-full overflow-hidden bg-[#1A1410] py-24 sm:py-32 lg:py-40 text-[#E8E2D6]"
     >
       {/* ---------------------------------------------------------- */}
-      {/* Background — continues the Hero's atmosphere               */}
+      {/* Background Atmosphere                                      */}
       {/* ---------------------------------------------------------- */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0">
-        <div className="absolute -left-[8%] top-[6%] h-[55%] w-[46%] bg-[radial-gradient(closest-side,rgba(139,124,246,0.12),transparent)]" />
-        <div className="absolute -right-[6%] bottom-[4%] h-[50%] w-[42%] bg-[radial-gradient(closest-side,rgba(196,100,46,0.1),transparent)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(232,226,214,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(232,226,214,0.035)_1px,transparent_1px)] bg-size-[64px_64px] [mask-image:radial-gradient(ellipse_at_center,black_25%,transparent_72%)]" />
-        <span className="absolute inset-y-0 left-[3%] hidden w-px bg-[linear-gradient(to_bottom,transparent,rgba(232,226,214,0.1)_25%,rgba(232,226,214,0.1)_75%,transparent)] lg:block" />
-        <span className="absolute inset-y-0 right-[3%] hidden w-px bg-[linear-gradient(to_bottom,transparent,rgba(232,226,214,0.1)_25%,rgba(232,226,214,0.1)_75%,transparent)] lg:block" />
-        <div className="absolute inset-0 opacity-[0.05]" style={GRAIN} />
+        {/* Kinetic Cursor Spotlight */}
+        <motion.div
+          className="absolute h-[700px] w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-35 blur-3xl pointer-events-none"
+          style={{
+            left: smoothX,
+            top: smoothY,
+            background:
+              "radial-gradient(circle, rgba(139,124,246,0.18) 0%, rgba(196,100,46,0.12) 40%, transparent 70%)",
+          }}
+        />
+
+        {/* Blueprint Grid */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(232,226,214,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(232,226,214,0.03)_1px,transparent_1px)] bg-size-[64px_64px] [mask-image:radial-gradient(ellipse_at_center,black_25%,transparent_75%)]" />
+
+        {/* Organic Texture Grain */}
+        <div className="absolute inset-0 opacity-[0.045]" style={GRAIN} />
+
+        {/* Circuit Tracks */}
+        <CircuitTrack className="top-12 opacity-15" />
+        <CircuitTrack className="bottom-16 rotate-180 opacity-15" />
+
+        {/* Floating Geometric Shards */}
+        <FloatingShards
+          shards={ABOUT_SHARDS}
+          smoothX={smoothX}
+          smoothY={smoothY}
+        />
       </div>
 
-      <div className="relative z-10 mx-auto w-full max-w-[1600px] px-5 sm:px-8 lg:px-14">
-        {/* Top label row */}
-        <Reveal reduced={reduced} y={8}>
-          <div className="flex items-center gap-4">
-            <Label dot="bg-[#8B7CF6]">02 // THE PHILOSOPHY</Label>
-            <span aria-hidden="true" className="h-px flex-1 bg-[#E8E2D6]/10" />
-            <Label dot="bg-[#C4642E]">BVB // 2026</Label>
-          </div>
-        </Reveal>
+      {/* Massive Typographic Backdrop */}
+      <span
+        aria-hidden="true"
+        className={`${DISPLAY} pointer-events-none absolute left-0 top-16 select-none text-[18vw] font-black uppercase leading-none tracking-tighter text-[#E8E2D6]/[0.015]`}
+      >
+        DICHOTOMY
+      </span>
 
-        {/* Headline + statement + glyph */}
-        <div className="mt-12 grid gap-12 lg:mt-16 lg:grid-cols-12 lg:items-end lg:gap-8">
-          <div className="lg:col-span-7">
+      {/* ---------------------------------------------------------- */}
+      {/* Main Container */}
+      <div className="relative z-10 mx-auto w-full max-w-[1440px] px-6 sm:px-8 lg:px-12">
+        {/* ============================================================ */}
+        {/*  MONUMENTAL HERO: VISUAL & KINETIC DUALITY                  */}
+        {/* ============================================================ */}
+        <div
+          ref={cubeStageRef}
+          className="mt-8 sm:mt-12 grid gap-12 lg:grid-cols-12 lg:items-center lg:gap-14"
+        >
+          {/* Left Column: Monumental Headline (Zero Long Paragraphs) */}
+          <div className="lg:col-span-6">
             <h2
-              className={`${DISPLAY} text-[clamp(2.6rem,9vw,4.5rem)] font-bold uppercase leading-[0.94] tracking-[-0.02em] lg:text-[clamp(3rem,4.6vw,5.25rem)]`}
+              className={`${DISPLAY} text-[clamp(2.6rem,7.5vw,4.8rem)] font-extrabold uppercase leading-[0.92] tracking-[-0.03em]`}
             >
-              <Reveal reduced={reduced} delay={0.05}>
-                <span className={`block ${GRAD_BUILD}`}>Build on purpose.</span>
-              </Reveal>
-              <Reveal reduced={reduced} delay={0.15}>
-                <span className={`block ${GRAD_BREAK}`}>Break on purpose.</span>
-              </Reveal>
+              <span className={`block ${GRAD_BUILD}`}>Construct to endure.</span>
+              <span className={`block ${GRAD_BREAK}`}>Fracture to discover.</span>
             </h2>
 
-            <Reveal reduced={reduced} delay={0.3} className="mt-8 max-w-lg lg:mt-10">
-              <p className="border-l-2 border-[#C4642E] pl-4 text-sm leading-relaxed text-[#E8E2D6]/70 sm:text-base">
-                BvB starts from a simple tension: every system worth building
-                is worth challenging. We construct with precision, then go
-                looking for the seams — the assumptions worth breaking, the
-                shortcuts worth questioning. What survives gets rebuilt
-                sharper. What doesn't teaches us something anyway.
+            {/* Ultra-Short High-Impact Axiom */}
+            <div className="mt-8 border-l-2 border-[#C4642E] pl-4">
+              <p className={`${MONO} text-xs sm:text-sm tracking-wide text-[#E8E2D6]/70 uppercase leading-relaxed font-semibold`}>
+                Most systems survive in isolation. BvB forces collision.
+                Architect under pressure, then execute catastrophic failure testing.
               </p>
-            </Reveal>
-
-            <Reveal
-              reduced={reduced}
-              delay={0.4}
-              className={`${MONO} mt-6 text-[10px] uppercase tracking-[0.25em] text-[#E8E2D6]/40 sm:text-xs`}
-            >
-              Build — Break — Rethink — Create
-            </Reveal>
+            </div>
           </div>
 
-          <div className="flex justify-center lg:col-span-5 lg:justify-end">
-            <AssemblyGlyph reduced={reduced} />
+          {/* Right Column: Unique Interactive Duality Engine */}
+          <div className="lg:col-span-6 flex justify-center lg:justify-end">
+            <DualityEngine
+              entropy={entropy}
+              reduced={reduced}
+            />
           </div>
         </div>
 
-        {/* Principles */}
-        <div className="mt-24 sm:mt-28 lg:mt-32">
-          <Reveal reduced={reduced} className="mb-2 flex items-center gap-4">
-            <Label dot="bg-[#C4642E]">THE PRINCIPLES</Label>
-            <span aria-hidden="true" className="h-px flex-1 bg-[#E8E2D6]/10" />
-          </Reveal>
+        {/* ============================================================ */}
+        {/*  THE THREE PHASES: QUIZ, BUILD, BREAK                        */}
+        {/* ============================================================ */}
+        <div className="mt-24 sm:mt-32">
+          <div className="border-b border-[#E8E2D6]/10 pb-4 mb-2 flex items-center justify-between">
+            <span className={`${MONO} text-[11px] font-bold tracking-[0.25em] text-[#E8E2D6]/50 uppercase`}>
+              THE THREE PHASES // QUIZ • BUILD • BREAK
+            </span>
+            <span className={`${MONO} text-[10px] tracking-widest text-[#E8E2D6]/30 uppercase`}>
+              HOVER TO TRIGGER REACTION
+            </span>
+          </div>
 
           <div>
-            {PRINCIPLES.map((item, i) => (
-              <PrincipleRow
-                key={item.n}
-                item={item}
-                delay={0.08 * i}
-                reduced={reduced}
+            {PHASES.map((phase, idx) => (
+              <InteractiveBlade
+                key={phase.num}
+                phase={phase}
+                index={idx}
+                onHover={(val) => setEntropy(val)}
               />
             ))}
-            <div aria-hidden="true" className="border-t border-[#E8E2D6]/10" />
+            <div className="border-t border-[#E8E2D6]/10" />
           </div>
+        </div>
+
+        {/* ============================================================ */}
+        {/*  CINEMATIC CREED BANNER                                      */}
+        {/* ============================================================ */}
+        <div className="mt-20 sm:mt-28 text-center border-t border-b border-[#E8E2D6]/10 py-12">
+          <p
+            className={`${DISPLAY} text-lg sm:text-2xl lg:text-3xl font-extrabold uppercase tracking-tight text-[#E8E2D6]/90`}
+          >
+            &ldquo;What can be broken will be broken. What survives becomes the standard.&rdquo;
+          </p>
         </div>
       </div>
     </section>
