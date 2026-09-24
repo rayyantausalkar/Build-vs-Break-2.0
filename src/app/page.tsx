@@ -14,10 +14,13 @@ import GlobalSpotlight from "@/components/GlobalSpotlight";
 export default function Home() {
   const handleRegisterClick = (e?: React.MouseEvent) => {
     e?.preventDefault?.();
-    console.log("Registration clicked");
     const el = document.getElementById("contact");
     if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
+      if (typeof window !== "undefined" && window.__lenis) {
+        window.__lenis.scrollTo(el, { offset: -80, duration: 1.15 });
+      } else {
+        el.scrollIntoView({ behavior: "smooth" });
+      }
     }
   };
 

@@ -244,9 +244,6 @@ function DualityEngine({
 interface PhaseRound {
   num: string;
   name: string;
-  stage: string;
-  axiom: string;
-  tag: string;
   details: string;
   accent: string;
   entropyVal: number;
@@ -256,9 +253,6 @@ const PHASES: PhaseRound[] = [
   {
     num: "01",
     name: "QUIZ",
-    stage: "ROUND 01",
-    axiom: "CORE APTITUDE",
-    tag: "RAPID ELIMINATION",
     details:
       "A fast-paced technical screening round evaluating algorithmic thinking, computer science fundamentals, data structures, and programming logic under strict time limits to filter the top qualifying squads.",
     accent: IVORY,
@@ -267,9 +261,6 @@ const PHASES: PhaseRound[] = [
   {
     num: "02",
     name: "BUILD",
-    stage: "ROUND 02",
-    axiom: "LIVE ARCHITECTURE",
-    tag: "PROTOTYPE SPRINT",
     details:
       "The core engineering trial. Qualified squads build innovative, production-grade systems and AI-powered solutions entirely live from scratch—strictly zero pre-built repositories, evaluated on scalability and code quality.",
     accent: VIOLET,
@@ -278,9 +269,6 @@ const PHASES: PhaseRound[] = [
   {
     num: "03",
     name: "BREAK",
-    stage: "ROUND 03",
-    axiom: "ADVERSARIAL STRESS",
-    tag: "DEBUG & DESTROY",
     details:
       "The battlefield inversion. Teams switch roles to identify vulnerabilities, hunt obscure edge cases, reverse-engineer, and debug complex codebases under relentless adversarial pressure to expose every weak link.",
     accent: EMBER,
@@ -297,20 +285,14 @@ function InteractiveBlade({
   index: number;
   onHover: (target: number) => void;
 }) {
-  const [hovered, setHovered] = useState(false);
-
   return (
     <motion.div
-      onMouseEnter={() => {
-        setHovered(true);
-        onHover(phase.entropyVal);
-      }}
-      onMouseLeave={() => setHovered(false)}
+      onMouseEnter={() => onHover(phase.entropyVal)}
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay: index * 0.1, ease: EASE }}
-      className="group relative flex flex-col lg:flex-row lg:items-center justify-between border-t border-[#E8E2D6]/10 py-8 lg:py-10 transition-all duration-500 cursor-pointer overflow-hidden gap-6"
+      className="group relative flex flex-col sm:flex-row sm:items-start border-t border-[#E8E2D6]/10 py-8 lg:py-10 transition-all duration-500 cursor-pointer overflow-hidden gap-4 sm:gap-8"
     >
       {/* Background Hover Aura Flare */}
       <span
@@ -321,59 +303,27 @@ function InteractiveBlade({
         }}
       />
 
-      {/* Left: Number + Monumental Title + Detailed Explanation */}
-      <div className="relative z-10 flex flex-col sm:flex-row sm:items-start gap-5 sm:gap-8 lg:max-w-[65%]">
-        <div className="flex sm:flex-col items-center sm:items-start gap-3 sm:gap-1 shrink-0 pt-1">
-          <span
-            className={`${MONO} text-xs sm:text-sm tracking-[0.25em] text-[#E8E2D6]/40 transition-colors duration-300 group-hover:text-white`}
-          >
-            {phase.num}
-          </span>
-          <span
-            className={`${MONO} text-[10px] tracking-widest uppercase font-semibold text-[#E8E2D6]/30 sm:mt-1`}
-          >
-            {phase.stage}
-          </span>
-        </div>
-
-        <div>
-          <h3
-            className={`${DISPLAY} text-3xl sm:text-5xl lg:text-6xl font-extrabold uppercase tracking-tight text-white transition-transform duration-500 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-2`}
-          >
-            {phase.name}
-          </h3>
-          <p
-            className={`${MONO} mt-2.5 text-xs sm:text-sm leading-relaxed text-[#E8E2D6]/65 transition-colors duration-300 group-hover:text-[#E8E2D6]/90`}
-          >
-            {phase.details}
-          </p>
-        </div>
+      {/* Number */}
+      <div className="relative z-10 shrink-0 select-none pt-0.5">
+        <span
+          className={`${DISPLAY} text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#E8E2D6]/30 transition-colors duration-300 group-hover:text-white`}
+        >
+          {phase.num}
+        </span>
       </div>
 
-      {/* Right: Axiom & Tag + Arrow */}
-      <div className="relative z-10 flex items-center justify-between lg:justify-end gap-6 sm:gap-10 shrink-0 border-t border-[#E8E2D6]/5 pt-4 lg:border-t-0 lg:pt-0">
-        <div className="flex flex-col items-start lg:items-end gap-1">
-          <span
-            className={`${MONO} text-xs sm:text-sm font-bold tracking-[0.2em] uppercase transition-colors duration-300`}
-            style={{ color: hovered ? phase.accent : `${phase.accent}90` }}
-          >
-            {phase.axiom}
-          </span>
-
-          <span
-            className={`${MONO} text-[10px] sm:text-xs tracking-[0.2em] text-[#E8E2D6]/40 uppercase`}
-          >
-            // {phase.tag}
-          </span>
-        </div>
-
-        {/* Kinetic Chevron Indicator */}
-        <span
-          className={`${MONO} text-base transition-transform duration-300 group-hover:translate-x-2`}
-          style={{ color: phase.accent }}
+      {/* Monumental Title + Detailed Explanation */}
+      <div className="relative z-10 max-w-4xl">
+        <h3
+          className={`${DISPLAY} text-3xl sm:text-5xl lg:text-6xl font-extrabold uppercase tracking-tight text-white transition-transform duration-500 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-2`}
         >
-          →
-        </span>
+          {phase.name}
+        </h3>
+        <p
+          className={`${MONO} mt-2.5 text-xs sm:text-sm leading-relaxed text-[#E8E2D6]/65 transition-colors duration-300 group-hover:text-[#E8E2D6]/90`}
+        >
+          {phase.details}
+        </p>
       </div>
     </motion.div>
   );
@@ -436,7 +386,7 @@ export default function About() {
       onMouseMove={handleMouseMove}
       id="about"
       aria-label="About — the BvB philosophy"
-      className="relative isolate w-full overflow-hidden bg-[#1A1410] py-24 sm:py-32 lg:py-40 text-[#E8E2D6]"
+      className="relative isolate w-full overflow-hidden bg-[#1A1410] pt-14 sm:pt-20 lg:pt-24 pb-8 sm:pb-12 text-[#E8E2D6]"
     >
       {/* ---------------------------------------------------------- */}
       {/* Background Atmosphere                                      */}
@@ -461,7 +411,6 @@ export default function About() {
 
         {/* Circuit Tracks */}
         <CircuitTrack className="top-12 opacity-15" />
-        <CircuitTrack className="bottom-16 rotate-180 opacity-15" />
 
         {/* Floating Geometric Shards */}
         <FloatingShards
@@ -487,7 +436,7 @@ export default function About() {
         {/* ============================================================ */}
         <div
           ref={cubeStageRef}
-          className="mt-8 sm:mt-12 grid gap-12 lg:grid-cols-12 lg:items-center lg:gap-14"
+          className="mt-4 sm:mt-8 grid gap-10 lg:grid-cols-12 lg:items-center lg:gap-14"
         >
           {/* Left Column: Monumental Headline (Zero Long Paragraphs) */}
           <div className="lg:col-span-6">
@@ -519,16 +468,7 @@ export default function About() {
         {/* ============================================================ */}
         {/*  THE THREE PHASES: QUIZ, BUILD, BREAK                        */}
         {/* ============================================================ */}
-        <div className="mt-24 sm:mt-32">
-          <div className="border-b border-[#E8E2D6]/10 pb-4 mb-2 flex items-center justify-between">
-            <span className={`${MONO} text-[11px] font-bold tracking-[0.25em] text-[#E8E2D6]/50 uppercase`}>
-              THE THREE PHASES // QUIZ • BUILD • BREAK
-            </span>
-            <span className={`${MONO} text-[10px] tracking-widest text-[#E8E2D6]/30 uppercase`}>
-              HOVER TO TRIGGER REACTION
-            </span>
-          </div>
-
+        <div className="mt-14 sm:mt-18">
           <div>
             {PHASES.map((phase, idx) => (
               <InteractiveBlade
@@ -545,7 +485,7 @@ export default function About() {
         {/* ============================================================ */}
         {/*  CINEMATIC CREED BANNER                                      */}
         {/* ============================================================ */}
-        <div className="mt-20 sm:mt-28 text-center border-t border-b border-[#E8E2D6]/10 py-12">
+        <div className="mt-12 sm:mt-16 text-center border-t border-b border-[#E8E2D6]/10 py-6 sm:py-8">
           <p
             className={`${DISPLAY} text-lg sm:text-2xl lg:text-3xl font-extrabold uppercase tracking-tight text-[#E8E2D6]/90`}
           >

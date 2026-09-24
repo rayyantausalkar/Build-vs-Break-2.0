@@ -56,6 +56,17 @@ const FOCUSABLE = "a[href], button:not([disabled])";
 /* ------------------------------------------------------------------ */
 
 function scrollToId(id: string, reduced: boolean) {
+  if (typeof window !== "undefined" && window.__lenis && !reduced) {
+    if (id === "home") {
+      window.__lenis.scrollTo(0, { duration: 1.15 });
+      return;
+    }
+    const el = document.getElementById(id);
+    if (!el) return;
+    window.__lenis.scrollTo(el, { offset: -NAV_OFFSET, duration: 1.15 });
+    return;
+  }
+
   const behavior: ScrollBehavior = reduced ? "auto" : "smooth";
   if (id === "home") {
     window.scrollTo({ top: 0, behavior });

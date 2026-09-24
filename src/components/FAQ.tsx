@@ -94,7 +94,7 @@ export default function FAQ() {
       id="faq"
       ref={sectionRef}
       onMouseMove={handleMouseMove}
-      className="relative min-h-[90vh] flex flex-col justify-center overflow-hidden bg-[#1A1410] px-6 py-24 sm:px-12 lg:px-20 lg:py-32 text-[#E8E2D6] selection:bg-[#8B7CF6]/30 selection:text-white"
+      className="relative w-full overflow-hidden bg-[#1A1410] px-6 py-14 sm:px-12 sm:py-20 lg:px-20 lg:py-24 text-[#E8E2D6] selection:bg-[#8B7CF6]/30 selection:text-white"
     >
 
       {/* Structural Construction Grid */}
@@ -104,8 +104,7 @@ export default function FAQ() {
       />
 
       {/* Timeline-style Orthogonal Circuit Trace */}
-      <CircuitTrack className="top-1/4" />
-      <CircuitTrack className="bottom-1/4 -scale-y-100" />
+      <CircuitTrack className="top-1/3 opacity-15" />
 
       {/* Floating Pieces & Shards (Matching Hero & Timeline) */}
       <FloatingShards shards={FAQ_SHARDS} smoothX={smoothX} smoothY={smoothY} />

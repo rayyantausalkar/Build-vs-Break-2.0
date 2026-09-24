@@ -353,7 +353,7 @@ export default function Rules() {
       id="rules"
       ref={sectionRef}
       onMouseMove={handleMouseMove}
-      className="relative min-h-[95vh] flex flex-col justify-center py-24 sm:py-32 lg:py-36 overflow-hidden bg-[#1A1410] text-[#E8E2D6] selection:bg-[#8B7CF6]/30 selection:text-white border-t border-[#E8E2D6]/10"
+      className="relative w-full py-14 sm:py-20 lg:py-24 overflow-hidden bg-[#1A1410] text-[#E8E2D6] selection:bg-[#8B7CF6]/30 selection:text-white"
     >
       {/* ------------------------------------------------------------ */}
       {/* Structural Construction Grid & Ambient Horizon              */}
@@ -374,8 +374,7 @@ export default function Rules() {
       />
 
       {/* Orthogonal Circuit Track Traces matching Hero, Timeline, FAQ */}
-      <CircuitTrack className="top-14" />
-      <CircuitTrack className="bottom-14 -scale-y-100" />
+      <CircuitTrack className="top-1/3 opacity-15" />
 
       {/* Floating 3D Geometric Shards */}
       <FloatingShards shards={RULES_SHARDS} smoothX={smoothX} smoothY={smoothY} />

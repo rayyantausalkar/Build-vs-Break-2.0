@@ -34,7 +34,7 @@ const TARGET_EMAIL = "neuronyx.aiml@aiktc.ac.in";
 /*  Custom High-Fidelity Vibrant Brand Icons                          */
 /* ------------------------------------------------------------------ */
 
-function WhatsAppIcon({ className = "h-14 w-14" }: { className?: string }) {
+function WhatsAppIcon({ className = "h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24" }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -54,7 +54,7 @@ function WhatsAppIcon({ className = "h-14 w-14" }: { className?: string }) {
   );
 }
 
-function InstagramIcon({ className = "h-14 w-14" }: { className?: string }) {
+function InstagramIcon({ className = "h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24" }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -82,7 +82,7 @@ function InstagramIcon({ className = "h-14 w-14" }: { className?: string }) {
   );
 }
 
-function LinkedinIcon({ className = "h-14 w-14" }: { className?: string }) {
+function LinkedinIcon({ className = "h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24" }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -258,7 +258,7 @@ const SOCIAL_CHANNELS = [
     hoverCore:
       "radial-gradient(circle at center, rgba(37,211,102,0.32) 0%, rgba(37,211,102,0.1) 70%, transparent 100%)",
     icon: (
-      <WhatsAppIcon className="h-11 w-11 sm:h-14 sm:w-14 md:h-16 md:w-16 transition-transform duration-300" />
+      <WhatsAppIcon className="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 transition-transform duration-300" />
     ),
   },
   {
@@ -271,7 +271,7 @@ const SOCIAL_CHANNELS = [
     hoverCore:
       "radial-gradient(circle at center, rgba(225,48,108,0.35) 0%, rgba(139,124,246,0.16) 65%, transparent 100%)",
     icon: (
-      <InstagramIcon className="h-11 w-11 sm:h-14 sm:w-14 md:h-16 md:w-16 transition-transform duration-300" />
+      <InstagramIcon className="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 transition-transform duration-300" />
     ),
   },
   {
@@ -284,7 +284,7 @@ const SOCIAL_CHANNELS = [
     hoverCore:
       "radial-gradient(circle at center, rgba(0,160,220,0.32) 0%, rgba(10,102,194,0.1) 65%, transparent 100%)",
     icon: (
-      <LinkedinIcon className="h-11 w-11 sm:h-14 sm:w-14 md:h-16 md:w-16 transition-transform duration-300" />
+      <LinkedinIcon className="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 transition-transform duration-300" />
     ),
   },
 ];
@@ -316,7 +316,7 @@ export default function Contact() {
       id="contact"
       ref={sectionRef}
       onMouseMove={handleMouseMove}
-      className="relative min-h-[85vh] flex flex-col justify-center overflow-hidden bg-[#1A1410] px-6 py-24 text-[#E8E2D6] sm:px-12 lg:px-20 lg:py-32 selection:bg-[#8B7CF6]/30 selection:text-white"
+      className="relative w-full overflow-hidden bg-[#1A1410] px-6 py-14 sm:px-12 sm:py-20 lg:px-20 lg:py-24 text-[#E8E2D6] selection:bg-[#8B7CF6]/30 selection:text-white"
     >
       {/* Structural Grid */}
       <div
@@ -325,8 +325,7 @@ export default function Contact() {
       />
 
       {/* Timeline-style Orthogonal Circuit Trace */}
-      <CircuitTrack className="top-1/3" />
-      <CircuitTrack className="bottom-1/3 -scale-y-100" />
+      <CircuitTrack className="top-1/3 opacity-15" />
 
       {/* Floating Pieces & Shards (Matching Hero & Timeline) */}
       <FloatingShards shards={CONTACT_SHARDS} smoothX={smoothX} smoothY={smoothY} />
@@ -342,7 +341,7 @@ export default function Contact() {
       {/* ------------------------------------------------------------ */}
       {/* Centerpiece: Monumental Kinetic Email & Invitation           */}
       {/* ------------------------------------------------------------ */}
-      <div className="relative z-10 my-auto text-center">
+      <div className="relative z-10 text-center">
         {/* Kinetic Hook */}
         <h2
           className={`${DISPLAY} text-3xl font-extrabold uppercase tracking-[-0.03em] sm:text-5xl lg:text-6xl text-[#E8E2D6]/80`}
@@ -391,7 +390,7 @@ export default function Contact() {
         {/* Awwwards-Level Monumental Magnetic Social Spheres            */}
         {/* Borderless 3D Circles: WhatsApp // Instagram // LinkedIn     */}
         {/* ------------------------------------------------------------ */}
-        <div className="mt-14 sm:mt-20 flex flex-wrap items-center justify-center gap-4 sm:gap-8 md:gap-12">
+        <div className="mt-10 sm:mt-14 flex flex-wrap items-center justify-center gap-4 sm:gap-8 md:gap-12">
           {SOCIAL_CHANNELS.map((channel) => (
             <MagneticPod
               key={channel.id}

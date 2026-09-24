@@ -289,7 +289,7 @@ export default function Timeline() {
       ref={sectionRef}
       onMouseMove={handleMouseMove}
       aria-label="Timeline — the BvB process"
-      className="relative isolate min-h-screen w-full overflow-hidden bg-[#1A1410] py-24 text-[#E8E2D6] sm:py-32 lg:py-40 border-t border-[#E8E2D6]/10 selection:bg-[#8B7CF6]/30 selection:text-white"
+      className="relative isolate w-full overflow-hidden bg-[#1A1410] py-14 sm:py-20 lg:py-24 text-[#E8E2D6] selection:bg-[#8B7CF6]/30 selection:text-white"
     >
       {/* ---------------------------------------------------------- */}
       {/* Background Atmosphere & Ambient Horizon Grid               */}
@@ -310,8 +310,7 @@ export default function Timeline() {
       />
 
       {/* Orthogonal Circuit Tracks matching Hero, Rules, FAQ */}
-      <CircuitTrack className="top-16" />
-      <CircuitTrack className="bottom-16 -scale-y-100" />
+      <CircuitTrack className="top-1/3 opacity-15" />
 
       {/* Floating 3D Geometric Shards with Mouse Parallax */}
       <FloatingShards shards={TIMELINE_SHARDS} smoothX={smoothX} smoothY={smoothY} />

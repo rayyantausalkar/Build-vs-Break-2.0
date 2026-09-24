@@ -1195,8 +1195,18 @@ export default function Hero({
   const contentY = useTransform(scrollYProgress, [0, 1], [0, -70]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.9], [1, 0.2]);
 
-  const handleExplore = (e) => {
+  const handleExplore = (e: React.MouseEvent) => {
     e.preventDefault();
+    if (typeof window !== "undefined" && window.__lenis && !reduced) {
+      const el = document.querySelector(exploreTarget);
+      if (el) {
+        window.__lenis.scrollTo(el as HTMLElement, { offset: -80, duration: 1.15 });
+      } else {
+        window.__lenis.scrollTo(window.innerHeight, { duration: 1.15 });
+      }
+      return;
+    }
+
     const behavior = reduced ? "auto" : "smooth";
     const el = document.querySelector(exploreTarget);
     if (el) {

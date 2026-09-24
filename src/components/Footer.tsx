@@ -202,15 +202,19 @@ export default function Footer() {
     e.preventDefault();
     const el = document.getElementById(id);
     if (!el) return;
-    const top = el.getBoundingClientRect().top + window.scrollY - 88;
-    window.scrollTo({ top: Math.max(top, 0), behavior: reduced ? "auto" : "smooth" });
+    if (typeof window !== "undefined" && window.__lenis && !reduced) {
+      window.__lenis.scrollTo(el, { offset: -88, duration: 1.15 });
+    } else {
+      const top = el.getBoundingClientRect().top + window.scrollY - 88;
+      window.scrollTo({ top: Math.max(top, 0), behavior: reduced ? "auto" : "smooth" });
+    }
   };
 
   return (
     <footer
       ref={footerRef}
       onMouseMove={handleMouseMove}
-      className="relative min-h-[85vh] flex flex-col justify-between overflow-hidden bg-[#1A1410] px-6 py-12 text-[#E8E2D6] sm:px-12 lg:px-20 lg:py-16 selection:bg-[#8B7CF6]/30 selection:text-white"
+      className="relative w-full flex flex-col justify-between overflow-hidden bg-[#1A1410] px-6 pt-12 pb-10 sm:px-12 lg:px-20 lg:pt-16 lg:pb-12 text-[#E8E2D6] selection:bg-[#8B7CF6]/30 selection:text-white"
     >
       {/* Subtle Construction Grid */}
       <div
@@ -219,7 +223,7 @@ export default function Footer() {
       />
 
       {/* Timeline-style Orthogonal Circuit Trace */}
-      <CircuitTrack className="top-1/4" />
+      <CircuitTrack className="top-1/4 opacity-15" />
 
       {/* Floating Pieces & Shards (Matching Hero & Timeline) */}
       <FloatingShards shards={FOOTER_SHARDS} smoothX={smoothX} smoothY={smoothY} />
@@ -227,7 +231,7 @@ export default function Footer() {
       {/* ------------------------------------------------------------ */}
       {/* Top Header: Credits                                          */}
       {/* ------------------------------------------------------------ */}
-      <div className="relative z-10 mb-8 flex items-center justify-start">
+      <div className="relative z-10 mb-6 flex items-center justify-start">
         <div className="flex items-center gap-2.5">
           <span className="h-1.5 w-1.5 rounded-full bg-[#8B7CF6] shadow-[0_0_8px_#8B7CF6]" />
           <p className={`${MONO} text-[11px] sm:text-xs tracking-[0.2em] uppercase text-[#E8E2D6]/70`}>
@@ -242,7 +246,7 @@ export default function Footer() {
       {/* ------------------------------------------------------------ */}
       {/* Centerpiece: Monumental Interactive Kinetic Typography       */}
       {/* ------------------------------------------------------------ */}
-      <div className="relative z-10 my-auto py-12 sm:py-16 text-center">
+      <div className="relative z-10 py-6 sm:py-10 text-center">
         {/* Giant Kinetic Interactive Title */}
         <div className="relative flex flex-wrap items-center justify-center gap-x-6 gap-y-2 lg:gap-x-12 select-none">
           {/* BUILD */}
@@ -250,7 +254,12 @@ export default function Footer() {
             type="button"
             onClick={() => {
               const el = document.getElementById("contact");
-              el?.scrollIntoView({ behavior: "smooth" });
+              if (!el) return;
+              if (typeof window !== "undefined" && window.__lenis && !reduced) {
+                window.__lenis.scrollTo(el, { offset: -88, duration: 1.15 });
+              } else {
+                el.scrollIntoView({ behavior: "smooth" });
+              }
             }}
             className={`group/build ${DISPLAY} relative block text-[clamp(3.5rem,14vw,11.5rem)] font-extrabold uppercase leading-none tracking-[-0.04em] outline-none transition-transform duration-500 hover:scale-[1.03] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)]`}
           >
@@ -272,22 +281,26 @@ export default function Footer() {
             </span>
           </button>
 
-          {/* Central Faceted Apex Icon */}
-          <span
-            aria-hidden="true"
-            className="relative hidden sm:block h-[34px] w-[30px] lg:h-[48px] lg:w-[42px] shrink-0 transition-transform duration-700 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] hover:rotate-45 hover:scale-110"
-          >
-            <span className="absolute inset-0 bg-[#E8E2D6] [clip-path:polygon(50%_0,100%_25%,50%_50%,0_25%)]" />
-            <span className="absolute inset-0 bg-[#8B7CF6] [clip-path:polygon(0_25%,50%_50%,50%_100%,0_75%)]" />
-            <span className="absolute inset-0 bg-[#C4642E] [clip-path:polygon(50%_50%,100%_25%,100%_75%,50%_100%)]" />
-          </span>
+          {/* Central VS Divider */}
+          <div className="flex items-center gap-3 sm:gap-4 select-none my-auto">
+            <span
+              className={`${DISPLAY} text-2xl sm:text-4xl lg:text-5xl font-extrabold uppercase tracking-widest text-[#C4642E]`}
+            >
+              VS
+            </span>
+          </div>
 
           {/* BREAK */}
           <button
             type="button"
             onClick={() => {
               const el = document.getElementById("contact");
-              el?.scrollIntoView({ behavior: "smooth" });
+              if (!el) return;
+              if (typeof window !== "undefined" && window.__lenis && !reduced) {
+                window.__lenis.scrollTo(el, { offset: -88, duration: 1.15 });
+              } else {
+                el.scrollIntoView({ behavior: "smooth" });
+              }
             }}
             className={`group/break ${DISPLAY} relative block text-[clamp(3.5rem,14vw,11.5rem)] font-extrabold uppercase leading-none tracking-[-0.04em] outline-none transition-transform duration-500 hover:scale-[1.03] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)]`}
           >
@@ -324,10 +337,10 @@ export default function Footer() {
           <span
             className={`${DISPLAY} text-xl font-bold tracking-tight text-[#E8E2D6]`}
           >
-            B<span className="text-[#C4642E]">v</span>B
+            Build <span className="text-[#C4642E]">vs</span> Break
           </span>
           <span className={`${MONO} text-[11px] uppercase tracking-[0.2em] text-[#E8E2D6]/50`}>
-            © {new Date().getFullYear()} BvB. ALL RIGHTS RESERVED.
+            © {new Date().getFullYear()} BUILD VS BREAK. ALL RIGHTS RESERVED.
           </span>
         </div>
       </div>
