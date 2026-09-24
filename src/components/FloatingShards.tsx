@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { motion, MotionValue, useReducedMotion, useTransform } from "motion/react";
+import { motion, MotionValue, useMotionValue, useReducedMotion, useTransform } from "motion/react";
 
 /* ------------------------------------------------------------------ */
 /*  BvB Design Palette & Tones                                         */
@@ -228,6 +228,19 @@ export const CONTACT_SHARDS: ShardItem[] = [
   { id: "c10", type: "dust", x: 86, y: 64, size: 9, tone: "ember", rot: -20, dr: 14, dy: -7, dur: 7.5, delay: 1.1, parallax: 0.04 },
 ];
 
+export const PRIZE_SHARDS: ShardItem[] = [
+  { id: "p1", type: "crystal", x: 6, y: 20, size: 38, tone: "violet", rot: 14, dr: 8, dy: -12, dur: 8.5, delay: 0.2, parallax: 0.03 },
+  { id: "p2", type: "timeline-node", x: 93, y: 18, size: 34, tone: "ember", rot: 0, dr: -6, dy: -10, dur: 7.8, delay: 0.8, parallax: 0.04 },
+  { id: "p3", type: "diamond", x: 5, y: 55, size: 26, tone: "ivory", rot: 45, dr: 10, dy: -8, dur: 9, delay: 0.4, parallax: 0.02 },
+  { id: "p4", type: "cube", x: 94, y: 58, size: 36, tone: "violet", rot: -18, dr: -8, dy: -13, dur: 8.8, delay: 1.1, parallax: 0.04 },
+  { id: "p5", type: "crystal", x: 12, y: 86, size: 32, tone: "ember", rot: 22, dr: 12, dy: -7, dur: 7.4, delay: 0.6, parallax: 0.03 },
+  { id: "p6", type: "cube", x: 88, y: 84, size: 28, tone: "ivory", rot: -14, dr: 7, dy: -9, dur: 8.2, delay: 1.3, parallax: 0.03 },
+  { id: "p7", type: "crosshair", x: 18, y: 10, size: 18, rot: 0, dr: 0, dy: -4, dur: 11, delay: 0.2, parallax: 0.01 },
+  { id: "p8", type: "crosshair", x: 82, y: 92, size: 18, rot: 0, dr: 0, dy: -4, dur: 10, delay: 0.9, parallax: 0.01 },
+  { id: "p9", type: "dust", x: 10, y: 38, size: 10, tone: "ember", rot: 25, dr: 15, dy: -8, dur: 6.8, delay: 0.5, parallax: 0.05 },
+  { id: "p10", type: "dust", x: 90, y: 36, size: 9, tone: "violet", rot: -18, dr: 14, dy: -6, dur: 7.2, delay: 1.0, parallax: 0.04 },
+];
+
 export const FOOTER_SHARDS: ShardItem[] = [
   { id: "b1", type: "crystal", x: 8, y: 22, size: 38, tone: "ember", rot: -14, dr: 9, dy: -11, dur: 8.5, delay: 0.3, parallax: 0.04 },
   { id: "b2", type: "timeline-node", x: 92, y: 20, size: 32, tone: "violet", rot: 0, dr: 6, dy: -9, dur: 7.5, delay: 0.8, parallax: 0.03 },
@@ -245,8 +258,8 @@ export const FOOTER_SHARDS: ShardItem[] = [
 
 interface FloatingShardsProps {
   shards: ShardItem[];
-  smoothX?: MotionValue<number>;
-  smoothY?: MotionValue<number>;
+  smoothX?: MotionValue<number> | null;
+  smoothY?: MotionValue<number> | null;
 }
 
 export function FloatingShards({ shards, smoothX, smoothY }: FloatingShardsProps) {
@@ -284,17 +297,24 @@ function FloatingShardElement({
 }: {
   item: ShardItem;
   index: number;
-  smoothX?: MotionValue<number>;
-  smoothY?: MotionValue<number>;
+  smoothX?: MotionValue<number> | null;
+  smoothY?: MotionValue<number> | null;
   reduced: boolean;
 }) {
   const p = item.parallax || 0.02;
 
+  // Genuine fallback MotionValues so useTransform always binds to a valid MotionValue with .on()
+  const fallbackX = useMotionValue(500);
+  const fallbackY = useMotionValue(400);
+
+  const activeX = smoothX ?? fallbackX;
+  const activeY = smoothY ?? fallbackY;
+
   // Parallax shift tied to cursor motion values if available
-  const px = useTransform(smoothX || { get: () => 0 } as any, (v: number) =>
+  const px = useTransform(activeX, (v: number) =>
     reduced ? 0 : (v - 500) * p
   );
-  const py = useTransform(smoothY || { get: () => 0 } as any, (v: number) =>
+  const py = useTransform(activeY, (v: number) =>
     reduced ? 0 : (v - 400) * p
   );
 

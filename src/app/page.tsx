@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
 import Timeline from "@/components/Timeline";
+import Prizes from "@/components/Prizes";
 import Rules from "@/components/Rules";
 import FAQ from "@/components/FAQ";
 import Contact from "@/components/Contact";
@@ -33,6 +34,7 @@ export default function Home() {
         <Hero onRegisterClick={handleRegisterClick} />
         <About />
         <Timeline />
+        <Prizes />
         <Rules />
         <FAQ />
         <Contact />

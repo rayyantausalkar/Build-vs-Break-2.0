@@ -26,6 +26,7 @@ const MONO =
 const LINKS = [
   { id: "about", label: "ABOUT" },
   { id: "timeline", label: "TIMELINE" },
+  { id: "prizes", label: "PRIZES" },
   { id: "rules", label: "RULES" },
   { id: "faq", label: "FAQ" },
   { id: "contact", label: "CONTACT" },
