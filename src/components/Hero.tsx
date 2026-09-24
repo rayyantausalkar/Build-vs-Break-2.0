@@ -1267,7 +1267,7 @@ export default function Hero({
         <span className="absolute inset-y-0 left-[3%] hidden w-px bg-[linear-gradient(to_bottom,transparent,rgba(232,226,214,0.12)_30%,rgba(232,226,214,0.12)_70%,transparent)] lg:block" />
         <span className="absolute inset-y-0 right-[3%] hidden w-px bg-[linear-gradient(to_bottom,transparent,rgba(232,226,214,0.12)_30%,rgba(232,226,214,0.12)_70%,transparent)] lg:block" />
 
-        <div className="absolute inset-0 opacity-[0.05]" style={GRAIN} />
+        <div className="hidden sm:block absolute inset-0 opacity-[0.05]" style={GRAIN} />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,rgba(0,0,0,0.35)_100%)]" />
       </motion.div>
 

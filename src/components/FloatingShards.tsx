@@ -259,11 +259,12 @@ export function FloatingShards({ shards, smoothX, smoothY }: FloatingShardsProps
     >
       <style>{DRIFT_CSS}</style>
 
-      {shards.map((s) => {
+      {shards.map((s, idx) => {
         return (
           <FloatingShardElement
             key={s.id}
             item={s}
+            index={idx}
             smoothX={smoothX}
             smoothY={smoothY}
             reduced={reduced}
@@ -276,11 +277,13 @@ export function FloatingShards({ shards, smoothX, smoothY }: FloatingShardsProps
 
 function FloatingShardElement({
   item,
+  index,
   smoothX,
   smoothY,
   reduced,
 }: {
   item: ShardItem;
+  index: number;
   smoothX?: MotionValue<number>;
   smoothY?: MotionValue<number>;
   reduced: boolean;
@@ -326,10 +329,10 @@ function FloatingShardElement({
         x: smoothX ? px : 0,
         y: smoothY ? py : 0,
       }}
-      className="absolute block"
+      className={`absolute ${index >= 5 ? "hidden sm:block" : "block"} will-change-transform transform-gpu`}
     >
       <div
-        className="block h-full w-full"
+        className="block h-full w-full will-change-transform transform-gpu"
         style={{
           ["--r0" as any]: `${item.rot || 0}deg`,
           ["--dr" as any]: `${item.dr || 6}deg`,

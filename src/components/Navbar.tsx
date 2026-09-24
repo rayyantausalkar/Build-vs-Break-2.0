@@ -387,7 +387,7 @@ export default function Navbar({ registerHref = "#register", onRegisterClick }: 
           variants={NAV_STATES}
           transition={{ duration: reduced ? 0 : 0.4, ease: EASE }}
           className={`relative mx-auto grid max-w-[1400px] grid-cols-[1fr_auto] items-center rounded-xl border px-3 transition-[backdrop-filter] duration-500 sm:px-4 lg:grid-cols-[1fr_auto_1fr] lg:px-5 ${
-            solid ? "backdrop-blur-xl" : "backdrop-blur-md"
+            solid ? "backdrop-blur-md sm:backdrop-blur-xl" : "backdrop-blur-sm sm:backdrop-blur-md"
           }`}
         >
           {/* Brand */}

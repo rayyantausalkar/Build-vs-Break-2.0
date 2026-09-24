@@ -35,7 +35,7 @@ export default function SmoothScroll() {
       gestureOrientation: "vertical",
       smoothWheel: true,
       wheelMultiplier: 1.0,
-      touchMultiplier: 1.2,
+      syncTouch: true,
       autoRaf: true,
       anchors: {
         offset: -80,

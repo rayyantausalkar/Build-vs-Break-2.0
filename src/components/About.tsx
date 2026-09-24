@@ -407,7 +407,7 @@ export default function About() {
         <div className="absolute inset-0 bg-[linear-gradient(rgba(232,226,214,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(232,226,214,0.03)_1px,transparent_1px)] bg-size-[64px_64px] [mask-image:radial-gradient(ellipse_at_center,black_25%,transparent_75%)]" />
 
         {/* Organic Texture Grain */}
-        <div className="absolute inset-0 opacity-[0.045]" style={GRAIN} />
+        <div className="hidden sm:block absolute inset-0 opacity-[0.045]" style={GRAIN} />
 
         {/* Circuit Tracks */}
         <CircuitTrack className="top-12 opacity-15" />

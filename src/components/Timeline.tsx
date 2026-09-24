@@ -276,63 +276,36 @@ export default function Timeline() {
   const smoothX = useSpring(mouseX, { stiffness: 75, damping: 22 });
   const smoothY = useSpring(mouseY, { stiffness: 75, damping: 22 });
 
-  /* Activate middle timeline item dynamically on scroll */
+  /* Activate middle timeline item dynamically on scroll via IntersectionObserver */
   useEffect(() => {
-    let ticking = false;
-
-    const handleScroll = () => {
-      if (!sectionRef.current) return;
-      const sectionRect = sectionRef.current.getBoundingClientRect();
-      const vh = window.innerHeight;
-
-      // Only evaluate if the timeline section is in view
-      if (sectionRect.bottom <= 0 || sectionRect.top >= vh) return;
-
-      const midY = vh * 0.5;
-      let closestIdx = 0;
-      let minDistance = Infinity;
-
-      itemRefs.current.forEach((el, idx) => {
-        if (!el) return;
-        const rect = el.getBoundingClientRect();
-        const elCenter = rect.top + rect.height * 0.5;
-        const distance = Math.abs(elCenter - midY);
-
-        if (distance < minDistance) {
-          minDistance = distance;
-          closestIdx = idx;
-        }
-      });
-
-      setActiveIdx((prev) => (prev === closestIdx ? prev : closestIdx));
-    };
-
-    const onScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          handleScroll();
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll, { passive: true });
-
-    const lenis = (window as unknown as { __lenis?: { on: (event: string, cb: () => void) => void; off: (event: string, cb: () => void) => void } }).__lenis;
-    if (lenis?.on) {
-      lenis.on("scroll", onScroll);
+    if (typeof window === "undefined" || !("IntersectionObserver" in window)) {
+      return;
     }
 
-    onScroll();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const idx = itemRefs.current.indexOf(entry.target as HTMLDivElement);
+            if (idx !== -1) {
+              setActiveIdx(idx);
+            }
+          }
+        });
+      },
+      {
+        root: null,
+        rootMargin: "-38% 0px -38% 0px",
+        threshold: 0,
+      }
+    );
+
+    itemRefs.current.forEach((el) => {
+      if (el) observer.observe(el);
+    });
 
     return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-      if (lenis?.off) {
-        lenis.off("scroll", onScroll);
-      }
+      observer.disconnect();
     };
   }, []);
 
@@ -363,11 +336,11 @@ export default function Timeline() {
       {/* Atmospheric Ambient Glow Orbs */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -right-28 top-28 h-96 w-96 rounded-full bg-[#8B7CF6]/10 blur-[140px]"
+        className="pointer-events-none absolute -right-28 top-28 h-96 w-96 rounded-full bg-[#8B7CF6]/10 blur-[60px] sm:blur-[140px]"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -left-28 bottom-28 h-96 w-96 rounded-full bg-[#C4642E]/10 blur-[140px]"
+        className="pointer-events-none absolute -left-28 bottom-28 h-96 w-96 rounded-full bg-[#C4642E]/10 blur-[60px] sm:blur-[140px]"
       />
 
       {/* Orthogonal Circuit Tracks matching Hero, Rules, FAQ */}
@@ -453,7 +426,7 @@ export default function Timeline() {
                     }`}
                   >
                     <div
-                      className={`relative overflow-hidden rounded-2xl p-4.5 sm:p-7 backdrop-blur-xl border text-left transition-all duration-500 ${
+                      className={`relative overflow-hidden rounded-2xl p-4.5 sm:p-7 backdrop-blur-sm sm:backdrop-blur-xl border text-left transition-all duration-500 ${
                         isActive
                           ? isEmber
                             ? "border-[#C4642E]/70 shadow-[0_20px_45px_-10px_rgba(0,0,0,0.85),0_0_24px_-4px_rgba(196,100,46,0.3)] scale-[1.02]"

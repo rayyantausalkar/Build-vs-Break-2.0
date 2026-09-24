@@ -143,7 +143,7 @@ export default function FAQ() {
               <motion.div
                 key={item.id}
                 whileHover={reduced ? {} : { y: -2 }}
-                className={`group relative overflow-hidden backdrop-blur-xl rounded-2xl sm:rounded-3xl transition-all duration-300 select-none ${
+                className={`group relative overflow-hidden backdrop-blur-sm sm:backdrop-blur-xl rounded-2xl sm:rounded-3xl transition-all duration-300 select-none ${
                   isOpen
                     ? "border border-[#8B7CF6]/50 shadow-[0_14px_34px_-10px_rgba(0,0,0,0.7),0_0_24px_-4px_rgba(139,124,246,0.22)]"
                     : "border border-[#E8E2D6]/12 hover:border-[#8B7CF6]/40 shadow-[0_4px_20px_-8px_rgba(0,0,0,0.5)] hover:shadow-[0_8px_24px_-6px_rgba(139,124,246,0.18)]"

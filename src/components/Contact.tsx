@@ -199,7 +199,7 @@ function MagneticPod({
           target="_blank"
           rel="noopener noreferrer"
           aria-label={label}
-          className="group relative flex h-28 w-28 sm:h-36 sm:w-36 md:h-40 md:w-40 items-center justify-center overflow-hidden rounded-full backdrop-blur-2xl transition-all duration-500 select-none hover:shadow-[0_28px_60px_-15px_rgba(0,0,0,0.9)]"
+          className="group relative flex h-28 w-28 sm:h-36 sm:w-36 md:h-40 md:w-40 items-center justify-center overflow-hidden rounded-full backdrop-blur-sm sm:backdrop-blur-2xl transition-all duration-500 select-none hover:shadow-[0_28px_60px_-15px_rgba(0,0,0,0.9)]"
           style={{
             background: podBg,
             boxShadow:
@@ -356,7 +356,7 @@ export default function Contact() {
           <a
             href={`mailto:${TARGET_EMAIL}`}
             onClick={copyEmail}
-            className="group relative inline-flex items-center justify-center rounded-2xl sm:rounded-[2.25rem] border border-[#8B7CF6]/45 bg-[#1F1729]/90 px-4 py-3.5 sm:px-10 sm:py-6 lg:px-14 lg:py-7 backdrop-blur-2xl outline-none select-none max-w-full transition-transform duration-300 hover:scale-[1.01]"
+            className="group relative inline-flex items-center justify-center rounded-2xl sm:rounded-[2.25rem] border border-[#8B7CF6]/45 bg-[#1F1729]/90 px-4 py-3.5 sm:px-10 sm:py-6 lg:px-14 lg:py-7 backdrop-blur-sm sm:backdrop-blur-2xl outline-none select-none max-w-full transition-transform duration-300 hover:scale-[1.01]"
             style={{
               boxShadow:
                 "inset 0 1px 2px rgba(255,255,255,0.22), inset 0 -6px 16px rgba(0,0,0,0.85), 0 20px 50px -15px rgba(0,0,0,0.85), 0 0 35px rgba(139,124,246,0.25)",
