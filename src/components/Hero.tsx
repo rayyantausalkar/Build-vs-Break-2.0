@@ -10,7 +10,8 @@ import {
   useSpring,
   useTransform,
 } from "motion/react";
-import { ArrowDown, ArrowUpRight } from "lucide-react";
+import { ArrowDown, ArrowUpRight, Search, Sparkles } from "lucide-react";
+import { useRegistration } from "@/lib/useRegistration";
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
@@ -1098,10 +1099,10 @@ function SecondaryCta({ href, onClick }) {
           aria-hidden="true"
           className="pointer-events-none absolute -bottom-1 -right-1 h-2.5 w-2.5 border-b border-r border-[#C4642E] opacity-0 transition-all duration-300 group-hover:-bottom-px group-hover:-right-px group-hover:opacity-100"
         />
-        <span>Explore BvB</span>
-        <ArrowDown
+        <span>Find Registration</span>
+        <Search
           aria-hidden="true"
-          className="h-4 w-4 transition-transform duration-300 group-hover:translate-y-1"
+          className="h-4 w-4 text-[#C4642E] transition-transform duration-300 group-hover:scale-110"
         />
       </a>
     </span>
@@ -1123,6 +1124,7 @@ export default function Hero({
   exploreTarget = "#about",
   onRegisterClick,
 }: HeroProps) {
+  const { registration, isRegistered } = useRegistration();
   const sectionRef = useRef<HTMLElement>(null);
   const visibleRef = useRef(true);
   const reduced = Boolean(useReducedMotion());
@@ -1746,10 +1748,19 @@ export default function Hero({
               {...fade(1.45)}
               className="flex flex-col gap-3 sm:flex-row sm:items-center lg:col-span-7 lg:justify-end lg:gap-4"
             >
-              <PrimaryCta href={registerHref} onClick={onRegisterClick}>
-                Register Now
+              <PrimaryCta
+                href={isRegistered ? "/dashboard" : registerHref}
+                onClick={isRegistered ? () => { window.location.href = "/dashboard"; } : onRegisterClick}
+              >
+                {isRegistered ? "Dashboard" : "Register Now"}
               </PrimaryCta>
-              <SecondaryCta href={exploreTarget} onClick={handleExplore} />
+              <SecondaryCta
+                href="/dashboard"
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.location.href = "/dashboard";
+                }}
+              />
             </motion.div>
           </div>
 

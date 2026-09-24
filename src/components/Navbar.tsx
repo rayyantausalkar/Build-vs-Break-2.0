@@ -9,7 +9,8 @@ import {
   useScroll,
   type Variants,
 } from "motion/react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Ticket } from "lucide-react";
+import { useRegistration } from "@/lib/useRegistration";
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
@@ -190,6 +191,7 @@ export interface NavbarProps {
 }
 
 export default function Navbar({ registerHref = "#register", onRegisterClick }: NavbarProps) {
+  const { registration, isRegistered } = useRegistration();
   const reduced = Boolean(useReducedMotion());
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -313,6 +315,12 @@ export default function Navbar({ registerHref = "#register", onRegisterClick }: 
   };
 
   const handleRegister = (e: React.MouseEvent<HTMLAnchorElement>, fromMenu = false) => {
+    if (isRegistered) {
+      if (e && isPlainClick(e)) e.preventDefault();
+      if (fromMenu) setOpen(false);
+      window.location.href = "/dashboard";
+      return;
+    }
     if (onRegisterClick) {
       if (e && isPlainClick(e)) e.preventDefault();
       if (fromMenu) setOpen(false);
@@ -446,12 +454,28 @@ export default function Navbar({ registerHref = "#register", onRegisterClick }: 
           </ul>
 
           {/* Desktop register */}
-          <div className="hidden justify-self-end lg:block">
+          <div className="hidden justify-self-end lg:flex lg:items-center lg:gap-3">
+            {!isRegistered && (
+              <a
+                href="/dashboard"
+                className={`${MONO} text-[10px] tracking-[0.16em] uppercase text-[#E8E2D6]/40 hover:text-[#E8E2D6] transition-colors`}
+              >
+                Find Entry
+              </a>
+            )}
+
             <RegisterButton
-              href={registerHref}
+              href={isRegistered ? "/dashboard" : registerHref}
               onClick={(e) => handleRegister(e)}
             >
-              REGISTER
+              {isRegistered ? (
+                <span className="flex items-center gap-1.5">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#8B7CF6] shadow-[0_0_6px_#8B7CF6]" />
+                  DASHBOARD
+                </span>
+              ) : (
+                "REGISTER"
+              )}
             </RegisterButton>
           </div>
 
@@ -579,14 +603,26 @@ export default function Navbar({ registerHref = "#register", onRegisterClick }: 
               </ul>
             </nav>
 
-            <motion.div variants={itemVariants} className="relative mt-8">
+            <motion.div variants={itemVariants} className="relative mt-8 space-y-3">
               <RegisterButton
                 size="lg"
-                href={registerHref}
+                href={isRegistered ? "/dashboard" : registerHref}
                 onClick={(e) => handleRegister(e, true)}
               >
-                REGISTER NOW
+                {isRegistered ? "VIEW DASHBOARD" : "REGISTER NOW"}
               </RegisterButton>
+
+              {!isRegistered && (
+                <div className="text-center">
+                  <a
+                    href="/dashboard"
+                    onClick={() => setOpen(false)}
+                    className={`${MONO} text-[10px] tracking-[0.18em] uppercase text-[#E8E2D6]/50 hover:text-[#E8E2D6]`}
+                  >
+                    Already registered? Find entry &rarr;
+                  </a>
+                </div>
+              )}
             </motion.div>
 
             <motion.div
