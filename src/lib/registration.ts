@@ -110,18 +110,22 @@ export async function lookupRegistration(
   phone: string
 ): Promise<{ success: boolean; data?: RegistrationRecord; message?: string }> {
   const cleanId = registrationId.trim().toUpperCase();
-  const cleanPhone = phone.trim().replace(/\D/g, "");
+  const rawDigits = phone.trim().replace(/\D/g, "");
+  const cleanPhone = rawDigits.slice(-10);
 
   // Check if current cached item matches
   const local = getSavedRegistration();
-  if (
-    local &&
-    local.registrationId.toUpperCase() === cleanId &&
-    local.participants.some(
-      (p) => p.phone.replace(/\D/g, "").slice(-10) === cleanPhone.slice(-10)
-    )
-  ) {
-    return { success: true, data: local };
+  if (local && local.registrationId?.toUpperCase() === cleanId) {
+    const phones = [
+      ...(local.participants || []).map((p) => p.phone),
+      local.primaryContact?.phone,
+    ]
+      .filter(Boolean)
+      .map((ph) => String(ph).replace(/\D/g, "").slice(-10));
+
+    if (phones.includes(cleanPhone)) {
+      return { success: true, data: local };
+    }
   }
 
   try {
@@ -133,7 +137,7 @@ export async function lookupRegistration(
       body: JSON.stringify({
         action: "lookup",
         registrationId: cleanId,
-        phone: cleanPhone,
+        phone: cleanPhone || rawDigits,
       }),
     });
 
@@ -149,7 +153,9 @@ export async function lookupRegistration(
       throw new Error("Invalid response from registration server.");
     }
 
-    if (!result?.success || !result?.data) {
+    const regData = result.registration || result.data;
+
+    if (!result?.success || !regData) {
       if (result?.message && result.message.includes("Registration received successfully")) {
         return {
           success: false,
@@ -165,15 +171,40 @@ export async function lookupRegistration(
       };
     }
 
+    const participants: Participant[] = (regData.participants || []).map((p: any, idx: number) => ({
+      position: p.position ?? idx + 1,
+      role: (p.role || (idx === 0 || p.position === 1 ? "captain" : "member")) as "captain" | "member",
+      name: p.name || "",
+      email: p.email || "",
+      phone: p.phone || "",
+      college: p.college || "",
+      course: p.course || "",
+      branch: p.branch || "",
+      year: p.year || "",
+    }));
+
+    const primaryContact = regData.primaryContact || {
+      name: participants[0]?.name || "",
+      email: participants[0]?.email || "",
+      phone: participants[0]?.phone || "",
+    };
+
     const record: RegistrationRecord = {
-      registrationId: result.data.registrationId || cleanId,
-      teamName: result.data.teamName || "My Team",
-      teamFormat: result.data.teamFormat || (result.data.groupSize === 3 ? "trio" : "duo"),
-      groupSize: Number(result.data.groupSize) || (result.data.participants?.length || 2),
-      primaryContact: result.data.primaryContact || {},
-      participants: result.data.participants || [],
-      registeredAt: result.data.createdAt || result.data.registeredAt || new Date().toISOString(),
-      status: result.data.status || "Confirmed",
+      registrationId: regData.registrationId || cleanId,
+      teamName: regData.teamName || "My Team",
+      teamFormat:
+        regData.teamFormat ||
+        regData.registrationType ||
+        (Number(regData.groupSize) === 3 ? "trio" : "duo"),
+      groupSize: Number(regData.groupSize) || participants.length || 2,
+      primaryContact,
+      participants,
+      registeredAt:
+        regData.createdAt ||
+        regData.timestamp ||
+        regData.registeredAt ||
+        new Date().toISOString(),
+      status: regData.status || "Confirmed",
     };
 
     saveRegistration(record);

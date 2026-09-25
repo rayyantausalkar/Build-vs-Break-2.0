@@ -109,14 +109,17 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
+    const params = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+    const forceFind = params?.get("find") === "true";
+
     const saved = getSavedRegistration();
-    if (saved && saved.registrationId) {
-      // User is logged in: view pass directly, cannot find registration while logged in
+    if (saved && saved.registrationId && !forceFind) {
+      // User is logged in: view pass directly
       setRecord(saved);
       setShowLookup(false);
     } else {
-      // User is not logged in: show the lookup form
-      setRecord(null);
+      // Show the lookup form
+      setRecord(saved || null);
       setShowLookup(true);
     }
     setLoading(false);
@@ -159,6 +162,10 @@ export default function Dashboard() {
     if (res.success && res.data) {
       setRecord(res.data);
       setShowLookup(false);
+      setToastMessage("Logged in! Squad credentials loaded.");
+      setTimeout(() => {
+        setToastMessage(null);
+      }, 3500);
     } else {
       setSearchError(
         res.message ||
@@ -282,18 +289,9 @@ export default function Dashboard() {
                 </p>
               </div>
 
-              {/* Action Buttons in Header: Join WhatsApp, Copy ID & Print Pass for logged-in user */}
+              {/* Action Buttons in Header: Only Copy ID & Print Pass for logged-in user */}
               {record && (
                 <div className="flex flex-wrap items-center gap-2.5 shrink-0">
-                  <a
-                    href={WHATSAPP_GROUP_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group inline-flex items-center gap-2 rounded-xl border border-[#25D366]/40 bg-[#25D366]/15 px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.16em] text-[#25D366] transition-all hover:bg-[#25D366]/25 hover:border-[#25D366]/70 shadow-[0_0_20px_rgba(37,211,102,0.18)]"
-                  >
-                    <WhatsAppIcon className="h-3.5 w-3.5" />
-                    JOIN WHATSAPP
-                  </a>
                   <button
                     type="button"
                     onClick={copyId}
@@ -494,16 +492,7 @@ export default function Dashboard() {
                           <WhatsAppIcon className="h-6 w-6" />
                         </div>
                         <div>
-                          <div className="flex items-center gap-2">
-                            <span className={`${MONO} text-[9px] font-bold uppercase tracking-[0.22em] text-[#25D366]`}>
-                              OFFICIAL PARTICIPANT COMMUNITY
-                            </span>
-                            <span className="flex h-2 w-2 relative">
-                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#25D366] opacity-75"></span>
-                              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#25D366]"></span>
-                            </span>
-                          </div>
-                          <h3 className={`${DISPLAY} text-base sm:text-xl font-black uppercase tracking-tight text-[#E8E2D6] mt-1`}>
+                          <h3 className={`${DISPLAY} text-base sm:text-xl font-black uppercase tracking-tight text-[#E8E2D6]`}>
                             Join Official WhatsApp Group
                           </h3>
                           <p className="mt-1 text-xs leading-relaxed text-[#E8E2D6]/70 max-w-xl">
@@ -617,16 +606,7 @@ export default function Dashboard() {
                 </div>
 
                 {/* Bottom Navigation */}
-                <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-                  <a
-                    href={WHATSAPP_GROUP_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2.5 rounded-xl bg-[#25D366] px-8 py-3.5 text-xs font-black uppercase tracking-[0.18em] text-[#08150D] shadow-[0_0_24px_rgba(37,211,102,0.35)] transition-all hover:scale-[1.02] hover:brightness-110 active:scale-[0.98]"
-                  >
-                    <WhatsAppIcon className="h-4 w-4" />
-                    Join WhatsApp Group &rarr;
-                  </a>
+                <div className="mt-10 flex items-center justify-center">
                   <a
                     href="/"
                     className="inline-flex items-center gap-2 rounded-xl border border-[#E8E2D6]/15 bg-[#1F1729]/80 px-8 py-3.5 text-xs font-bold uppercase tracking-[0.18em] text-[#E8E2D6]/80 transition-all hover:border-[#8B7CF6]/50 hover:text-white"

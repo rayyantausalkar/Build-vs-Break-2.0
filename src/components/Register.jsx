@@ -728,16 +728,7 @@ function RegistrationTicket({ record }) {
                 <WhatsAppIcon className="h-6 w-6" />
               </div>
               <div>
-                <div className="flex items-center gap-2">
-                  <span className={`${MONO} text-[9px] font-bold uppercase tracking-[0.22em] text-[#25D366]`}>
-                    OFFICIAL PARTICIPANT COMMUNITY
-                  </span>
-                  <span className="flex h-2 w-2 relative">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#25D366] opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#25D366]"></span>
-                  </span>
-                </div>
-                <h3 className={`${DISPLAY} text-base sm:text-xl font-black uppercase tracking-tight text-[#E8E2D6] mt-1`}>
+                <h3 className={`${DISPLAY} text-base sm:text-xl font-black uppercase tracking-tight text-[#E8E2D6]`}>
                   Join Official WhatsApp Group
                 </h3>
                 <p className="mt-1 text-xs leading-relaxed text-[#E8E2D6]/70 max-w-xl">
