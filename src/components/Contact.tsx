@@ -251,7 +251,7 @@ const SOCIAL_CHANNELS = [
   {
     id: "whatsapp",
     label: "WhatsApp",
-    href: "https://chat.whatsapp.com/",
+    href: "https://whatsapp.com/channel/0029VbBAGiJ8kyyNrMOz1I0P",
     glow: "radial-gradient(circle at center, rgba(37,211,102,0.6) 0%, rgba(18,140,126,0.3) 50%, transparent 72%)",
     podBg:
       "radial-gradient(circle at 45% 35%, rgba(37,211,102,0.22) 0%, rgba(16,24,20,0.95) 70%, #0B100E 100%)",
@@ -264,7 +264,7 @@ const SOCIAL_CHANNELS = [
   {
     id: "instagram",
     label: "Instagram",
-    href: "https://instagram.com/",
+    href: "https://www.instagram.com/neuronyx_aiktc/",
     glow: "radial-gradient(circle at center, rgba(225,48,108,0.65) 0%, rgba(139,124,246,0.45) 45%, transparent 72%)",
     podBg:
       "radial-gradient(circle at 45% 35%, rgba(225,48,108,0.24) 0%, rgba(32,18,36,0.95) 70%, #100A14 100%)",
@@ -277,7 +277,7 @@ const SOCIAL_CHANNELS = [
   {
     id: "linkedin",
     label: "LinkedIn",
-    href: "https://linkedin.com/",
+    href: "https://www.linkedin.com/company/neuronyx-club/posts/",
     glow: "radial-gradient(circle at center, rgba(0,160,220,0.65) 0%, rgba(10,102,194,0.4) 50%, transparent 72%)",
     podBg:
       "radial-gradient(circle at 45% 35%, rgba(0,119,181,0.24) 0%, rgba(14,22,36,0.95) 70%, #080D14 100%)",
