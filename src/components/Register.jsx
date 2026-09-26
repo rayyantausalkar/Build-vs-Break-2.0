@@ -28,6 +28,7 @@ import {
   Users,
   X,
   Zap,
+  Lock,
 } from "lucide-react";
 
 import {
@@ -121,7 +122,7 @@ const emptyMember = () => ({
   name: "",
   email: "",
   phone: "",
-  college: "",
+  college: "AIKTC",
   course: "",
   branch: "",
   year: "",
@@ -226,13 +227,19 @@ function Field({
   required = true,
   error,
   autoComplete,
+  readOnly = false,
 }) {
   return (
     <label className="group block min-w-0" data-error={error ? "true" : undefined}>
       <div className="mb-2 flex items-center justify-between gap-3">
-        <span className={`${MONO} text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8E2D6]/60`}>
+        <span className={`${MONO} text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8E2D6]/60 flex items-center gap-1.5`}>
           {label}
-          {required && <span className="ml-1 text-[#C4642E]">*</span>}
+          {required && <span className="text-[#C4642E]">*</span>}
+          {readOnly && (
+            <span className="rounded bg-[#8B7CF6]/15 border border-[#8B7CF6]/30 px-1.5 py-0.5 text-[8px] font-bold tracking-wider text-[#8B7CF6]">
+              FIXED
+            </span>
+          )}
         </span>
         {error && (
           <span className="text-[9px] font-semibold text-[#C4642E]">
@@ -245,16 +252,26 @@ function Field({
         <input
           type={type}
           value={value}
-          onChange={(event) => onChange(event.target.value)}
+          onChange={(event) => (!readOnly && onChange ? onChange(event.target.value) : undefined)}
           placeholder={placeholder}
           autoComplete={autoComplete}
+          readOnly={readOnly}
+          tabIndex={readOnly ? -1 : undefined}
           className={cx(
             "h-12 w-full rounded-xl border bg-[#0F0B09]/80 px-4 text-sm text-[#E8E2D6] outline-none transition-all placeholder:text-[#E8E2D6]/25",
-            error
+            readOnly
+              ? "cursor-not-allowed bg-[#181222]/80 border-[#8B7CF6]/25 text-[#E8E2D6]/90 select-none pr-10"
+              : error
               ? "border-[#C4642E]/70"
               : "border-[#E8E2D6]/12 hover:border-[#E8E2D6]/25 focus:border-[#8B7CF6]/70 focus:bg-[#161020]"
           )}
         />
+        {readOnly && (
+          <Lock
+            size={14}
+            className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#8B7CF6]/60"
+          />
+        )}
       </div>
     </label>
   );
@@ -450,17 +467,6 @@ function MemberCard({
         </div>
 
         <div className="flex items-center gap-2">
-          {!captain && captainCollege?.trim() && (
-            <button
-              type="button"
-              onClick={() => onChange("college", captainCollege)}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-[#E8E2D6]/15 bg-[#1F1729]/60 px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.14em] text-[#E8E2D6]/60 transition hover:border-[#8B7CF6]/50 hover:text-white"
-            >
-              <Copy size={11} />
-              Same institution
-            </button>
-          )}
-
           <div
             className={`${MONO} flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-[9px] font-bold tracking-[0.14em]`}
             style={{
@@ -512,11 +518,12 @@ function MemberCard({
         />
         <Field
           label="College / Institution"
-          value={member.college}
+          value={member.college || "AIKTC"}
           onChange={(value) => onChange("college", value)}
-          placeholder="e.g. AIKTC"
+          placeholder="AIKTC"
           error={err("college")}
           autoComplete="off"
+          readOnly
         />
         <Field
           label="Course"
@@ -561,7 +568,7 @@ function ReviewMember({ member, index, onEdit }) {
   const details = [
     ["Email", member.email],
     ["Phone", member.phone],
-    ["Institution", member.college],
+    ["Institution", member.college || "AIKTC"],
     ["Course", member.course],
     ["Branch", member.branch],
     ["Year", member.year],
@@ -955,7 +962,7 @@ export default function Register({ onBack = () => {} }) {
         } else if (!PHONE_PATTERN.test(member.phone.trim())) {
           nextErrors[`${prefix}phone`] = "Please enter a valid phone number.";
         }
-        if (!member.college.trim()) {
+        if (!(member.college || "AIKTC").trim()) {
           nextErrors[`${prefix}college`] = "Institution is required.";
         }
         if (!member.course?.trim()) {
@@ -1022,7 +1029,7 @@ export default function Register({ onBack = () => {} }) {
         name: m.name.trim(),
         email: m.email.trim(),
         phone: m.phone.trim(),
-        college: m.college.trim(),
+        college: (m.college || "AIKTC").trim(),
         course: m.course?.trim() || "",
         branch: m.branch.trim(),
         year: m.year,
